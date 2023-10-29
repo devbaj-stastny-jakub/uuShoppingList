@@ -1,4 +1,8 @@
-import {Avatar, Stack, Typography} from "@mui/material";
+import {Avatar, IconButton, Menu, MenuItem, Stack, Typography} from "@mui/material";
+import {MoreHorizRounded} from "@mui/icons-material";
+import {useRef} from "react";
+import {ActionsMenu} from "./ActionsMenu";
+import {useAppDispatch, useAppSelector} from "../../../hooks";
 
 export interface DetailsHeaderProps {
     name?: string
@@ -7,15 +11,19 @@ export interface DetailsHeaderProps {
 }
 
 export const DetailsHeader = ({name, image,description}:DetailsHeaderProps) => {
+    const {shoppingList} = useAppSelector(state =>state.shoppingList)
     return (
         <Stack direction={{xs: "column-reverse", sm: "row"}} mt={3} spacing={2}>
             <Stack flex={1} spacing={1}>
-                <Typography variant={"h4"}>{name || "---"}</Typography>
+                <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"}>
+                    <Typography variant={"h4"}>{name || "---"}</Typography>
+                    <ActionsMenu />
+                </Stack>
                 <Stack direction={"row"} spacing={0.5}>
                     <Avatar sx={{width: 20, height: 20}}/>
-                    <Avatar sx={{width: 20, height: 20}}/>
-                    <Avatar sx={{width: 20, height: 20}}/>
-                    <Avatar sx={{width: 20, height: 20}}/>
+                    {shoppingList && shoppingList.membersIds.map(id=>(
+                        <Avatar key={id} sx={{width: 20, height: 20}}/>
+                    ))}
                 </Stack>
                 <Typography>{description || "---"}</Typography>
             </Stack>
