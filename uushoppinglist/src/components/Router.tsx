@@ -37,7 +37,7 @@ const Layout = () => {
                             <Stack direction={"row"} alignItems={"center"} px={2}>
                                 <Box px={2}>
                                     <Link style={{textDecoration: "none", color: "white"}} to={"/"}>
-                                        Nákupní seznam
+                                        Domovská stránka
                                     </Link>
                                 </Box>
                                 <Box px={2}>
@@ -47,12 +47,12 @@ const Layout = () => {
                                 </Box>
                             </Stack>
                         </Stack>
-                        {!isAuthenticated && <Button size={"small"} variant={"contained"} onClick={() => {
+                        {!isAuthenticated && <Button sx={{my: 1}} variant={"contained"} onClick={() => {
                             loginWithRedirect()
                         }}>Přihlásit se</Button>}
                         {isAuthenticated && <Button sx={{my: 1}} onClick={() => {
                             logout({logoutParams: {returnTo: window.location.origin}})
-                        }} color={"info"} size={"small"} variant={"text"}>Odhlásit se</Button>}
+                        }} color={"info"} variant={"text"}>Odhlásit se</Button>}
                     </Stack>
                 </Container>
             </Stack>
