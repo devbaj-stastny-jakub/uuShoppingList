@@ -21,7 +21,7 @@ export const ShoppingListItem = ({id, solved, name}: ShoppingListItemProps) => {
         dispatch(deleteShoppingListItem(id))
     }
     return (
-        <Grid xs={6}>
+        <Grid xs={12} sm={6}>
             <Stack alignItems={"center"} justifyContent={"space-between"} direction={"row"} p={1.25} border={1}
                    borderColor={"text.disabled"} borderRadius={1}>
                 <Stack direction={"row"} spacing={1} alignItems={"center"}>

@@ -3,7 +3,7 @@ import {
     Container,
     Stack,
     ToggleButton,
-    ToggleButtonGroup,
+    ToggleButtonGroup, useMediaQuery, useTheme,
 } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import {_shoppingListsService} from "../../services";
@@ -23,7 +23,8 @@ export const ShoppingListDetail = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [itemsFilter, setItemsFilter] = useState<"all" | "unsolved">("unsolved")
     const dispatch = useAppDispatch()
-    const {getAccessTokenSilently} = useAuth0()
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('sm'));
     const {shoppingList} = useAppSelector(state => state.shoppingList)
 
     useEffect(() => {
@@ -49,8 +50,8 @@ export const ShoppingListDetail = () => {
                 description={shoppingList?.description}
                 image={shoppingList?.image}
             />
-            <Stack direction={"row"} mt={3} justifyContent={"space-between"}>
-                <ToggleButtonGroup exclusive onChange={(e, state) => {
+            <Stack direction={{xs:"column", sm: "row"}} mt={3} spacing={2} justifyContent={"space-between"}>
+                <ToggleButtonGroup fullWidth={matches} exclusive onChange={(e, state) => {
                     setItemsFilter(state)
                 }} value={itemsFilter} color={"primary"}>
                     <ToggleButton value={"unsolved"}>
