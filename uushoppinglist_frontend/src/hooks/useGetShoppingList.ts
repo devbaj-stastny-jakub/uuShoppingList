@@ -1,8 +1,10 @@
+import {useEffect, useState} from "react";
 import {ShoppingList} from "../types";
 
-class ShoppingListsService {
-    getShoppingList(id: string): ShoppingList {
-        return {
+export const useGetShoppingList = (id: string)=>{
+    const [shoppingList, setShoppingList] = useState<ShoppingList | null>()
+    useEffect(() => {
+        const sl = {
             id: id,
             name: "Můj nákupní seznam",
             archived: false,
@@ -33,7 +35,7 @@ class ShoppingListsService {
                 }
             ]
         }
-    }
+        setShoppingList(sl)
+    }, []);
+    return {shoppingList}
 }
-
-export const _shoppingListsService = new ShoppingListsService()

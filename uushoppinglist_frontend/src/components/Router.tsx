@@ -3,6 +3,7 @@ import {createBrowserRouter, Link, Navigate, NavLink, Outlet, RouterProvider} fr
 import {ShoppingListDetail} from "../routes/ShoppingListDetail";
 import {Box, Button, Container, Stack, Tab, Tabs, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {useAuth0} from "@auth0/auth0-react";
+import {ShoppingListsList} from "../routes/ShoppingListsList";
 
 export const Router = () => {
     const {loginWithRedirect, isAuthenticated, logout, isLoading} = useAuth0()
@@ -14,6 +15,10 @@ export const Router = () => {
                 {
                     path: "shoppingList/:shoppingListId",
                     element: isAuthenticated ? <ShoppingListDetail/> : <Navigate to={"/"}/>,
+                },
+                {
+                    path: "shoppingLists",
+                    element: isAuthenticated ? <ShoppingListsList /> : <Navigate to={"/"} />
                 }
             ]
         },
@@ -38,6 +43,11 @@ const Layout = () => {
                                 <Box px={2}>
                                     <Link style={{textDecoration: "none", color: "white"}} to={"/"}>
                                         Domovská stránka
+                                    </Link>
+                                </Box>
+                                <Box px={2}>
+                                    <Link style={{textDecoration: "none", color: "white"}} to={"/shoppingLists"}>
+                                        Nákupní seznamy
                                     </Link>
                                 </Box>
                                 <Box px={2}>

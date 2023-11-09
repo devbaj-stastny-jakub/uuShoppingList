@@ -18,7 +18,8 @@ root.render(
             domain="dev-ducb3de5dqthsoxl.us.auth0.com"
             clientId="Pgc88socOBZw5ZHRoR1OpM51RT3UfDPU"
             authorizationParams={{
-                redirect_uri: window.location.origin
+                redirect_uri: window.location.origin,
+                audience: "http://uushoppinglist.com"
             }}
         >
             <Provider store={store}>

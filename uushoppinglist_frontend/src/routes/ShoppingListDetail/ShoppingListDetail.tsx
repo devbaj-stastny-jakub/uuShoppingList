@@ -6,7 +6,6 @@ import {
     ToggleButtonGroup, useMediaQuery, useTheme,
 } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
-import {_shoppingListsService} from "../../services";
 import {useEffect, useLayoutEffect, useState} from "react";
 import {ShoppingListItem as ShoppingListItemType} from "../../types";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -15,8 +14,7 @@ import {NewShoppingListItemDialog} from "./NewShoppingListItemDialog";
 import {DetailsHeader} from "./DetailsHeader";
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import {setShoppingList} from "../../store/shoppingListSlice";
-import axios from "axios";
-import {useAuth0} from "@auth0/auth0-react";
+import {useGetShoppingList} from "../../hooks";
 
 export const ShoppingListDetail = () => {
     const [shoppingListItems, setShoppingListItems] = useState<ShoppingListItemType[]>([])
@@ -26,11 +24,11 @@ export const ShoppingListDetail = () => {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
     const {shoppingList} = useAppSelector(state => state.shoppingList)
+    const {shoppingList: sl} = useGetShoppingList("12")
 
     useEffect(() => {
-        const sl = _shoppingListsService.getShoppingList("12")
-        dispatch(setShoppingList(sl))
-    }, []);
+        sl && dispatch(setShoppingList(sl))
+    }, [sl]);
 
     useEffect(() => {
         if(!shoppingList) return;
