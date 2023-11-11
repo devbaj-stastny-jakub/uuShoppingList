@@ -4,7 +4,6 @@ import {
     Stack,
     ToggleButton,
     ToggleButtonGroup,
-    Typography,
     useMediaQuery,
     useTheme
 } from "@mui/material";
@@ -12,34 +11,29 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import {useEffect, useMemo, useState} from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import {ShoppingListTile} from "./ShoppingListTile";
-import {useAppDispatch, useAppSelector} from "../../hooks";
-import {useAuth0} from "@auth0/auth0-react";
+import {useAppDispatch, useAppSelector, useGetShoppingLists} from "../../hooks";
+import {setShoppingLists} from "../../store/shoppingListsListSlice";
 
 export const ShoppingListsList = () => {
     const dispatch = useAppDispatch()
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0()
     const [itemsFilter, setItemsFilter] = useState<"active" | "archived">("active")
+    const {shoppingLists: sls} = useGetShoppingLists()
+    useEffect(() => {
+        dispatch(setShoppingLists(sls))
+    }, [sls]);
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
-
     const {shoppingLists} = useAppSelector(state => state.shoppingListsList)
-    const filteredShoppingLists = useMemo(()=>{
-        return shoppingLists.filter(shoppingList=>{
+    const filteredShoppingLists = useMemo(() => {
+        return shoppingLists.filter(shoppingList => {
             const archived = itemsFilter === "archived"
-            if(shoppingList.archived === archived) {
+            if (shoppingList.archived === archived) {
                 return true
             } else {
                 return false
             }
         })
     }, [shoppingLists, itemsFilter])
-
-    useEffect(() => {
-        //dispatch(setShoppingLists(sl))
-        const token = getAccessTokenSilently().then((token)=>{
-            console.debug("token", token)
-        })
-    }, [isAuthenticated]);
 
     return (
         <Container maxWidth={"md"}>

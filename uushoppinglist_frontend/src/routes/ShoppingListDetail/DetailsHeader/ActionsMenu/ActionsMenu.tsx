@@ -5,14 +5,13 @@ import {RenameMenuItem} from "./RenameMenuItem";
 import {DescriptionMenuItem} from "./DescriptionMenuItem";
 import {ArchiveMenuItem} from "./ArchiveMenuItem";
 import {UsersMenuItem} from "./UsersMenuItem";
-import {useAuth0} from "@auth0/auth0-react";
-import {useAuthorized} from "../../../../hooks/authorization";
 import {LeaveMenuItem} from "./LeaveMenuItem";
+import {useProfile} from "../../../../hooks/authorization";
 
 export const ActionsMenu = () => {
     const menuAnchorRef = useRef<any>()
+    const {isOwner} = useProfile()
     const [opened, setOpened] = useState(false)
-    const {isOwner, isAuthorized} = useAuthorized("14")
     return (
         <>
             <IconButton onClick={() => {

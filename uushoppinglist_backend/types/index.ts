@@ -17,6 +17,7 @@ export interface ShoppingList {
     ownerId: string
     membersIds: string[]
     items: ShoppingListItem[]
+    profile?: "member" | "owner"
 }
 
 export interface ShoppingListItem {

@@ -3,12 +3,13 @@ import axios from "axios";
 import {ShoppingList, User} from "../../types";
 import {shoppingListModel} from "../../models/shoppingList";
 import {sls} from "../../data";
-import {getIsAuthorized} from "../../helpers";
+import {getIsAuthorized, getProfile} from "../../helpers";
 
 
 export const getListsList = async (req: Request, res: Response) => {
     try {
         const userInfo = await getUserInfo(req)
+        console.log(userInfo)
         if(!userInfo) {
             res.status(401).send({errorMessages: [{message: "Cannot get user info..."}]})
             return;
@@ -108,9 +109,13 @@ export const deleteList = async (req: Request, res: Response) => {
 
 function getAuthorisedShoppingLists(shoppingLists: ShoppingList[], userInfo: User): ShoppingList[] {
     // @ts-ignore
-    return shoppingLists.filter(shoppingList => {
+    const filteredList =  shoppingLists.filter(shoppingList => {
         if (shoppingList.ownerId === userInfo.sub) return true
         return !!shoppingList.membersIds.find(id => id === userInfo.sub);
+    })
+    return filteredList.map(list=>{
+        list.profile = getProfile(userInfo.sub, list.id) as "member" | "owner"
+        return list
     })
 }
 // @ts-ignore

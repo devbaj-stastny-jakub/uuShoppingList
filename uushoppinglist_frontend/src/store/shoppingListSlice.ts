@@ -3,11 +3,13 @@ import {ShoppingList} from "../types";
 
 export interface ShoppingListState {
     shoppingList: ShoppingList | null
+    profile: "owner" | "member"
     users: any[]
 }
 
 const initialState: ShoppingListState = {
     shoppingList: null,
+    profile: "member",
     users: []
 }
 
@@ -15,6 +17,9 @@ export const shoppingListSlice = createSlice({
     name: 'shoppingList',
     initialState,
     reducers: {
+        setProfile: (state, action: PayloadAction<"member" | "owner">) => {
+            state.profile = action.payload
+        },
         removeAuthorizedUser: (state, action: PayloadAction<string>) => {
             if (!state.shoppingList) return;
             state.shoppingList.membersIds = state.shoppingList.membersIds.filter(memberId=>memberId !== action.payload)
@@ -28,6 +33,7 @@ export const shoppingListSlice = createSlice({
         },
         setShoppingList: (state, action: PayloadAction<ShoppingList>) => {
             state.shoppingList = action.payload
+            state.profile = action.payload.profile
         },
         editShoppingListValues: (state, action: PayloadAction<{ key: keyof ShoppingList, value: any }[]>) => {
             action.payload.forEach(change => {
@@ -61,6 +67,7 @@ export const shoppingListSlice = createSlice({
 
 export const {
     removeAuthorizedUser,
+    setProfile,
     addAuthorizedUser,
     setAuthorizedUsers,
     editShoppingListValues,

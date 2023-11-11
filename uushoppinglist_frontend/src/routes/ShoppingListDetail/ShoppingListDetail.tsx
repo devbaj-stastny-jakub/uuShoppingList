@@ -13,10 +13,12 @@ import {ShoppingListItem} from './ShoppingListItem';
 import {NewShoppingListItemDialog} from "./NewShoppingListItemDialog";
 import {DetailsHeader} from "./DetailsHeader";
 import {useAppDispatch, useAppSelector} from "../../hooks";
-import {setShoppingList} from "../../store/shoppingListSlice";
+import {setProfile, setShoppingList} from "../../store/shoppingListSlice";
 import {useGetShoppingList} from "../../hooks";
+import {useParams} from "react-router-dom";
 
 export const ShoppingListDetail = () => {
+    const {id} = useParams()
     const [shoppingListItems, setShoppingListItems] = useState<ShoppingListItemType[]>([])
     const [openDialog, setOpenDialog] = useState(false);
     const [itemsFilter, setItemsFilter] = useState<"all" | "unsolved">("unsolved")
@@ -24,7 +26,7 @@ export const ShoppingListDetail = () => {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
     const {shoppingList} = useAppSelector(state => state.shoppingList)
-    const {shoppingList: sl} = useGetShoppingList("12")
+    const {shoppingList: sl} = useGetShoppingList(id)
 
     useEffect(() => {
         sl && dispatch(setShoppingList(sl))

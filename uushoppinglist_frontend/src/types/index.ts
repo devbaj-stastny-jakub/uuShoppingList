@@ -7,6 +7,7 @@ export interface ShoppingList {
     ownerId: string
     membersIds: string[]
     items: ShoppingListItem[]
+    profile: "owner" | "member"
 }
 
 export interface ShoppingListItem {
