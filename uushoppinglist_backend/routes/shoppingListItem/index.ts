@@ -21,6 +21,6 @@ shoppingListItemRouter.patch("/update", jwtCheck, async (req: Request, res: Resp
 })
 
 shoppingListItemRouter.delete("/delete", jwtCheck, async (req: Request, res: Response) => {
-    await deleteItem(req, res)
-    return res.status(200).send()
+    const response = await deleteItem(req, res)
+    return res.status(200).send(response)
 })
