@@ -12,33 +12,51 @@ export const createItem = async (req: Request, res: Response) => {
         const valid = shoppingListItemModel.createModel.validate(data)
         if (!valid) {
             res.status(400).send({
+                inputData: data,
                 errorMessages: [{
                     message: "Bad request",
                     reason: shoppingListItemModel.createModel.validate.errors
-                }]
+                }],
+                result: null
             })
             return;
         }
         const userInfo = await getUserInfo(req)
         if (!userInfo) {
-            res.status(401).send({errorMessages: [{message: "Cannot get user info..."}]})
+            res.status(401).send({
+                inputData: data,
+                errorMessages: [{message: "Cannot get user info..."}],
+                result: null
+            })
             return;
         }
-        const targetList = sls.find(list=>list.id === data.shoppingListId)
-        if(!targetList) {
-            res.status(400).send({errorMessages: [{message: "Shopping list with this id doesnt exist"}]})
+        const targetList = sls.find(list => list.id === data.shoppingListId)
+        if (!targetList) {
+            res.status(400).send({
+                inputData: data,
+                errorMessages: [{message: "Shopping list with this id doesnt exist"}],
+                result: null
+            })
             return;
         }
         if (!getIsAuthorized(userInfo.sub, data.shoppingListId as string, ["owner", "member"])) {
-            res.status(401).send({errorMessages: [{message: "You dont have permissions to create this object in specified list"}]})
+            res.status(401).send({
+                inputData: data,
+                errorMessages: [{message: "You do not have permissions to create this object in specified list"}],
+                result: null
+            })
             return;
         }
         const newItem = {
-            id: crypto.randomBytes(24).toString("hex"),
+            id: crypto.randomBytes(12).toString("hex"),
             name: data.name,
             solved: false
         }
-        return newItem
+        return {
+            inputData: data,
+            errorMessages: [],
+            result: newItem
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }
@@ -50,35 +68,54 @@ export const patchItem = async (req: Request, res: Response) => {
         const valid = shoppingListItemModel.updateModel.validate(data)
         if (!valid) {
             res.status(400).send({
-                errorMessages: [{
-                    message: "Bad request",
-                    reason: shoppingListItemModel.updateModel.validate.errors
-                }]
+                inputData: data,
+                errorMessages: [{message: "Bad request", reason: shoppingListItemModel.updateModel.validate.errors}],
+                result: null
             })
             return;
         }
         const userInfo = await getUserInfo(req)
         if (!userInfo) {
-            res.status(401).send({errorMessages: [{message: "Cannot get user info..."}]})
+            res.status(401).send({
+                inputData: data,
+                errorMessages: [{message: "Cannot get user info..."}],
+                result: null
+            })
             return;
         }
-        const targetList = sls.find(list=>list.id === data.shoppingListId)
-        if(!targetList) {
-            res.status(400).send({errorMessages: [{message: "Shopping list with this id doesnt exist"}]})
+        const targetList = sls.find(list => list.id === data.shoppingListId)
+        if (!targetList) {
+            res.status(400).send({
+                inputData: data,
+                errorMessages: [{message: "Shopping list with this id doesnt exist"}],
+                result: null
+            })
             return;
         }
         if (!getIsAuthorized(userInfo.sub, data.shoppingListId as string, ["owner"])) {
-            res.status(401).send({errorMessages: [{message: "You dont have permissions to update this object"}]})
+            res.status(401).send({
+                inputData: data,
+                errorMessages: [{message: "You dont have permissions to update this object"}],
+                result: null
+            })
             return;
         }
-        const targetItem = targetList.items.find(item=>item.id === data.id)
-        if(!targetItem) {
-            res.status(400).send({errorMessages: [{message: "Item with this id doesnt exist"}]})
+        const targetItem = targetList.items.find(item => item.id === data.id)
+        if (!targetItem) {
+            res.status(400).send({
+                inputData: data,
+                errorMessages: [{message: "Item with this id doesnt exist"}],
+                result: null
+            })
             return;
         }
         targetItem.name = data.name as string
         targetItem.solved = data.solved as boolean
-        return targetItem
+        return {
+            inputData: data,
+            errorMessages: [],
+            result: targetItem
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }
@@ -90,29 +127,49 @@ export const deleteItem = async (req: Request, res: Response) => {
         const valid = shoppingListItemModel.deleteModel.validate(data)
         if (!valid) {
             res.status(400).send({
+                inputData: data,
                 errorMessages: [{
                     message: "Bad request",
                     reason: shoppingListItemModel.deleteModel.validate.errors
-                }]
+                }],
+                result: null
             })
             return;
         }
         const userInfo = await getUserInfo(req)
         if (!userInfo) {
-            res.status(401).send({errorMessages: [{message: "Cannot get user info..."}]})
+            res.status(401).send({
+                inputData: data,
+                errorMessages: [{message: "Cannot get user info..."}],
+                result: null
+            })
             return;
         }
-        const targetList = sls.find(list=>list.id === data.shoppingListId)
-        if(!targetList) {
-            res.status(400).send({errorMessages: [{message: "Shopping list with this id doesnt exist"}]})
+        const targetList = sls.find(list => list.id === data.shoppingListId)
+        if (!targetList) {
+            res.status(400).send({
+                inputData: data,
+                errorMessages: [{
+                    message: "Shopping list with this id doesnt exist",
+                }],
+                result: null
+            })
             return;
         }
         if (!getIsAuthorized(userInfo.sub, data.shoppingListId as string, ["owner", "member"])) {
-            res.status(401).send({errorMessages: [{message: "You dont have permissions to delete this object"}]})
+            res.status(401).send({
+                inputData: data,
+                errorMessages: [{message: "You dont have permissions to delete this object"}],
+                result: null
+            })
             return;
         }
-        targetList.items = targetList.items.filter(item=>item.id !== data.id)
-        return null
+        targetList.items = targetList.items.filter(item => item.id !== data.id)
+        return {
+            inputData: data,
+            errorMessages: [],
+            result: null
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }

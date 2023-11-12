@@ -14,7 +14,11 @@ export const getListsList = async (req: Request, res: Response) => {
             res.status(401).send({errorMessages: [{message: "Cannot get user info..."}]})
             return;
         }
-        return getAuthorisedShoppingLists(sls, userInfo)
+        return {
+            inputData: null,
+            errorMessages: [],
+            result: getAuthorisedShoppingLists(sls, userInfo)
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }
@@ -37,7 +41,11 @@ export const getList = async (req: Request, res: Response) => {
             res.status(401).send({errorMessages: [{message: "You dont have permissions to access this object"}]})
             return;
         }
-        return sls[0]
+        return {
+            inputData: data,
+            errorMessages: [],
+            result: sls[0]
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }
@@ -50,7 +58,11 @@ export const createList = async (req: Request, res: Response) => {
             res.status(401).send({errorMessages: [{message: "Cannot get user info..."}]})
             return;
         }
-        return sls[0]
+        return {
+            inputData: null,
+            errorMessages: [],
+            result:sls[0]
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }
@@ -73,7 +85,12 @@ export const patchList = async (req: Request, res: Response) => {
             res.status(401).send({errorMessages: [{message: "You dont have permissions to update this object"}]})
             return;
         }
-        return {...sls[0], ...data}
+        return {
+            inputData: data,
+            errorMessages: [],
+            result:{...sls[0], ...data}
+        }
+
     } catch (exception) {
         res.status(500).send(exception)
     }
@@ -101,7 +118,11 @@ export const deleteList = async (req: Request, res: Response) => {
             res.status(401).send({errorMessages: [{message: "You dont have permissions to delete this object"}]})
             return;
         }
-        return null
+        return {
+            inputData: data,
+            errorMessages: [],
+            result: null
+        }
     } catch (exception) {
         res.status(500).send(exception)
     }

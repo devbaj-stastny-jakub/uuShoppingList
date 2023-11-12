@@ -11,7 +11,7 @@ export const sls: ShoppingList[] = [
         image: "https://as1.ftcdn.net/v2/jpg/03/47/73/42/1000_F_347734248_edieDn4jeXvvCfGpwrY6rHZofZanW2M1.jpg",
         items: [
             {
-                id: "1",
+                id: "6a5764ea2ab4b9cc0a13fa4d",
                 name: "Ledový salát 4ks (max 30kč)",
                 solved: false
             },
