@@ -61,8 +61,10 @@ export const Router = () => {
                                 Done
                             </Stack>
                         }/>
-                        <Route path={"/shoppingLists"} element={<ShoppingListsList/>}/>
-                        <Route path={"/shoppingList/:id"} element={<ShoppingListDetail/>}/>
+                        <Route path={"/shoppingLists"}
+                               element={isAuthenticated ? <ShoppingListsList/> : <Navigate to={"/"}/>}/>
+                        <Route path={"/shoppingList/:id"}
+                               element={isAuthenticated ? <ShoppingListDetail/> : <Navigate to={"/"}/>}/>
                     </Routes>
                 </>
             )}
