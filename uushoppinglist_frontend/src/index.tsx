@@ -13,7 +13,6 @@ const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
-    <React.StrictMode>
         <Auth0Provider
             domain="dev-ducb3de5dqthsoxl.us.auth0.com"
             clientId="Pgc88socOBZw5ZHRoR1OpM51RT3UfDPU"
@@ -28,7 +27,6 @@ root.render(
                 </ThemeProvider>
             </Provider>
         </Auth0Provider>
-    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

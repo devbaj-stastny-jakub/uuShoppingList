@@ -19,7 +19,7 @@ export const useGetShoppingList = (id?: string)=>{
                     Authorization: `Bearer ${token}`
                 }
             })
-            setShoppingList(response.data as unknown as ShoppingList)
+            setShoppingList(response.data.result as unknown as ShoppingList)
         } catch (e: any) {
             console.debug(e)
         }

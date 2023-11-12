@@ -18,7 +18,7 @@ export const useGetShoppingLists = () => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            setShoppingLists(response.data as unknown as ShoppingList[])
+            setShoppingLists(response.data.result as unknown as ShoppingList[])
         } catch (e: any) {
             console.debug(e)
         }
