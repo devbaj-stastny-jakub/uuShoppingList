@@ -34,7 +34,18 @@ export const ShoppingListsList = () => {
             }
         })
     }, [shoppingLists, itemsFilter])
-
+    const handleCreateList = ()=>{
+        const newList = {...shoppingLists[0]}
+        newList.name = "Nový nákupní seznam"
+        const options = "abcdefghijlmnopqrtuvwxyz1234567890"
+        let generatedId = ""
+        for(let x = 0;x < 24;x++) {
+            generatedId += options[Math.floor(Math.random() * options.length)]
+        }
+        console.debug(generatedId)
+        newList.id = generatedId
+        dispatch(setShoppingLists([...shoppingLists, newList]))
+    }
     return (
         <Container maxWidth={"md"}>
             <Stack direction={{xs: "column", sm: "row"}} mt={3} spacing={2} justifyContent={"space-between"}>
@@ -48,7 +59,7 @@ export const ShoppingListsList = () => {
                         Archivované
                     </ToggleButton>
                 </ToggleButtonGroup>
-                <Button startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>Přidat seznam</Button>
+                <Button onClick={handleCreateList} startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>Přidat seznam</Button>
             </Stack>
             <Grid container mt={2} spacing={2}>
                 {filteredShoppingLists.map(shoppingList => (

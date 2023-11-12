@@ -7,11 +7,19 @@ import {ArchiveMenuItem} from "./ArchiveMenuItem";
 import {UsersMenuItem} from "./UsersMenuItem";
 import {LeaveMenuItem} from "./LeaveMenuItem";
 import {useProfile} from "../../../../hooks/authorization";
+import {useAppDispatch, useAppSelector} from "../../../../hooks";
+import {useNavigate} from "react-router-dom";
 
 export const ActionsMenu = () => {
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+    const {shoppingList} = useAppSelector(state =>state.shoppingList)
     const menuAnchorRef = useRef<any>()
     const {isOwner} = useProfile()
     const [opened, setOpened] = useState(false)
+    const handleDelete = ()=>{
+        navigate("/shoppingLists")
+    }
     return (
         <>
             <IconButton onClick={() => {
@@ -33,7 +41,7 @@ export const ActionsMenu = () => {
                         <DescriptionMenuItem/>
                         <ArchiveMenuItem/>
                         <UsersMenuItem/>
-                        <MenuItem sx={{color: "error.main"}}>Smazat</MenuItem>
+                        <MenuItem onClick={handleDelete} sx={{color: "error.main"}}>Smazat</MenuItem>
                     </>
                 )}
                 {!isOwner && (

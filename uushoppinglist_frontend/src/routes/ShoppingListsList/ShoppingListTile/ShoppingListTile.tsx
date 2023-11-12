@@ -26,10 +26,10 @@ export const ShoppingListTile = ({ownerId, image, id, name, membersIds}:Shopping
         navigate(`/shoppingList/${id}`)
     }
     return (
-        <Grid xs={4} onClick={handleClick} sx={{cursor: "pointer"}}>
+        <Grid xs={12} sm={6} md={4} onClick={handleClick} sx={{cursor: "pointer"}}>
             <Stack position={"relative"} sx={{borderRadius: 2, overflow:"hidden", boxShadow: "0 0 10px #C5C5C5"}}>
                 <img style={{height: 150, width: "100%", objectFit: "cover"}} src={"/placeholder.png"} alt=""/>
-                {isOwner && <DeleteButton />}
+                {isOwner && <DeleteButton id={id} />}
                 <Stack spacing={0.5} p={1}>
                     <Typography fontSize={14} fontWeight={"bold"}>{name}</Typography>
                     <Typography fontSize={14} color={"#938F96"}>{ownerId}{membersIds.toString()}</Typography>

@@ -16,11 +16,15 @@ export const shoppingListsListSlice = createSlice({
         setShoppingLists: (state, action: PayloadAction<ShoppingList[]>) => {
             state.shoppingLists = action.payload
         },
+        deleteShoppingList: (state, action: PayloadAction<string>) => {
+            state.shoppingLists = state.shoppingLists.filter(list=>list.id !== action.payload)
+        },
     }
 })
 
 export const {
-    setShoppingLists
+    setShoppingLists,
+    deleteShoppingList
 } = shoppingListsListSlice.actions
 
 export default shoppingListsListSlice.reducer

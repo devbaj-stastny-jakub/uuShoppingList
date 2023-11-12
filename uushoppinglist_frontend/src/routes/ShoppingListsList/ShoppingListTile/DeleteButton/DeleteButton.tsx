@@ -1,8 +1,15 @@
 import {DeleteOutline} from "@mui/icons-material";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import {MouseEventHandler, useState} from "react";
+import {useAppDispatch} from "../../../../hooks";
+import {deleteShoppingList} from "../../../../store/shoppingListsListSlice";
 
-export const DeleteButton = () => {
+export interface DeleteButtonProps {
+    id: string
+}
+
+export const DeleteButton = ({id}: DeleteButtonProps) => {
+    const dispatch = useAppDispatch()
     const [opened, setOpened] = useState(false)
     const handleClick = (e: any) => {
         e.stopPropagation()
@@ -10,6 +17,7 @@ export const DeleteButton = () => {
     }
     const handleDelete = (e:any) => {
         e.stopPropagation()
+        dispatch(deleteShoppingList(id))
         console.debug("delete")
     }
     return (

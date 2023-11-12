@@ -34,7 +34,7 @@ export const sls: ShoppingList[] = [
     }, {
         id: "6qmvt29laxlqkqh2sbqvamrm",
         name: "Můj nákupní seznam 2",
-        archived: false,
+        archived: true,
         ownerId: "auth0|653e6369ee4bf4a8960f49e5",
         membersIds: ["auth0|653e6369ee4bf4a8960f49e4"],
         description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In rutrum. Fusce aliquam vestibulum ipsum. Praesent dapibus. Etiam dui sem, fermentum vitae, sagittis id, malesuada in, quam.",
