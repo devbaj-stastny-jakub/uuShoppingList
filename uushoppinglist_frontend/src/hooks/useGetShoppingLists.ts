@@ -6,6 +6,7 @@ import {useAuth0} from "@auth0/auth0-react";
 
 export const useGetShoppingLists = () => {
     const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([])
+    const [loading, setLoading] = useState(true)
     const {getAccessTokenSilently} = useAuth0()
     const handleFetch = async ()=>{
         try {
@@ -21,10 +22,12 @@ export const useGetShoppingLists = () => {
             setShoppingLists(response.data.result as unknown as ShoppingList[])
         } catch (e: any) {
             console.debug(e)
+        } finally {
+            setLoading(false)
         }
     }
     useEffect(() => {
         handleFetch()
     }, []);
-    return {shoppingLists}
+    return {shoppingLists, loading}
 }

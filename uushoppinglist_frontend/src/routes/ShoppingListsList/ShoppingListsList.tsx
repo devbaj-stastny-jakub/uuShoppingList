@@ -1,6 +1,6 @@
 import {
     Button,
-    Container,
+    Container, Skeleton,
     Stack,
     ToggleButton,
     ToggleButtonGroup,
@@ -17,7 +17,7 @@ import {setShoppingLists} from "../../store/shoppingListsListSlice";
 export const ShoppingListsList = () => {
     const dispatch = useAppDispatch()
     const [itemsFilter, setItemsFilter] = useState<"active" | "archived">("active")
-    const {shoppingLists: sls} = useGetShoppingLists()
+    const {shoppingLists: sls, loading} = useGetShoppingLists()
     useEffect(() => {
         dispatch(setShoppingLists(sls))
     }, [sls]);
@@ -62,10 +62,15 @@ export const ShoppingListsList = () => {
                 <Button onClick={handleCreateList} startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>Přidat seznam</Button>
             </Stack>
             <Grid container mt={2} spacing={2}>
-                {filteredShoppingLists.map(shoppingList => (
+                {!loading && filteredShoppingLists.map(shoppingList => (
                     <ShoppingListTile key={shoppingList.id} id={shoppingList.id} name={shoppingList.name}
                                       ownerId={shoppingList.ownerId} membersIds={shoppingList.membersIds}
                                       image={shoppingList.image}/>
+                ))}
+                {loading && [1, 1, 1, 1, 1, 1].map(()=>(
+                    <Grid xs={12} sm={6} md={4} sx={{cursor: "pointer"}}>
+                        <Skeleton variant={"rounded"} height={212} width={"100%"} />
+                    </Grid>
                 ))}
             </Grid>
         </Container>
