@@ -58,7 +58,7 @@ export const Router = () => {
                     <Routes>
                         <Route path={"/"} element={
                             <Stack>
-                                Done
+
                             </Stack>
                         }/>
                         <Route path={"/shoppingLists"}
