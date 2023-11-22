@@ -11,17 +11,20 @@ export interface User {
 export interface ShoppingList {
     id: string
     name: string
-    description: string
+    description: string | null
     image: string
     archived: boolean
     ownerId: string
     membersIds: string[]
     items: ShoppingListItem[]
     profile?: "member" | "owner"
+    createdAt: string
+    updatedAt: string | null
 }
 
 export interface ShoppingListItem {
     id: string
     name: string
     solved: boolean
+    createdAt: string
 }

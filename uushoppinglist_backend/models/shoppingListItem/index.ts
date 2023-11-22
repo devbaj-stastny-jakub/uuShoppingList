@@ -1,4 +1,5 @@
 import Ajv, {JSONSchemaType, str} from "ajv"
+import {ThrowableError} from "../../errors";
 
 const ajv = new Ajv()
 
@@ -60,14 +61,22 @@ const deleteModel = {
     additionalProperties: false
 }
 
+const validate = (model, data)=>{
+    const validator = ajv.compile(model)
+    const valid = validator(data)
+    if(!valid) {
+        throw ThrowableError(validator.errors?.[0].message, 400, "shoppingListItem.validation")
+    }
+}
+
 export const shoppingListItemModel = {
     createModel: {
-        validate: ajv.compile(createModel)
+        validate: (data: any)=>{validate(createModel, data)}
     },
     updateModel: {
-        validate: ajv.compile(updateModel)
+        validate: (data: any)=>{validate(updateModel, data)}
     },
     deleteModel: {
-        validate: ajv.compile(deleteModel)
+        validate: (data: any)=>{validate(deleteModel, data)}
     }
 }

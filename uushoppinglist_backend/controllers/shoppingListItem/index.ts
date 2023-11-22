@@ -1,191 +1,90 @@
-import {Request, Response} from "express";
-import axios from "axios";
-import {ShoppingList, User} from "../../types";
+import {NextFunction, Request, Response} from "express";
 import {shoppingListItemModel} from "../../models/shoppingListItem";
 import * as crypto from "crypto";
-import {sls} from "../../data";
 import {getIsAuthorized} from "../../helpers";
+import {ThrowableError} from "../../errors";
+import {prisma} from "../../index";
 
-export const createItem = async (req: Request, res: Response) => {
+export const createItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.body
-        const valid = shoppingListItemModel.createModel.validate(data)
-        if (!valid) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{
-                    message: "Bad request",
-                    reason: shoppingListItemModel.createModel.validate.errors
-                }],
-                result: null
-            })
-            return;
-        }
-        const userInfo = await getUserInfo(req)
-        if (!userInfo) {
-            res.status(401).send({
-                inputData: data,
-                errorMessages: [{message: "Cannot get user info..."}],
-                result: null
-            })
-            return;
-        }
-        const targetList = sls.find(list => list.id === data.shoppingListId)
-        if (!targetList) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{message: "Shopping list with this id doesnt exist"}],
-                result: null
-            })
-            return;
-        }
-        if (!getIsAuthorized(userInfo.sub, data.shoppingListId as string, ["owner", "member"])) {
-            res.status(401).send({
-                inputData: data,
-                errorMessages: [{message: "You do not have permissions to create this object in specified list"}],
-                result: null
-            })
-            return;
-        }
-        const newItem = {
-            id: crypto.randomBytes(12).toString("hex"),
-            name: data.name,
-            solved: false
-        }
-        return {
-            inputData: data,
-            errorMessages: [],
-            result: newItem
-        }
-    } catch (exception) {
-        res.status(500).send(exception)
+        shoppingListItemModel.createModel.validate(data)
+        await getIsAuthorized(req.auth?.payload.sub, data.shoppingListId as string, ["owner", "member"])
+        const updatedShoppingList = await prisma.shoppingList.update({
+            where: {
+                id: data.shoppingListId
+            },
+            data: {
+                items: {
+                    push: {
+                        id: crypto.randomBytes(12).toString("hex"),
+                        name: data.name
+                    }
+                }
+            }
+        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        return updatedShoppingList
+    } catch (e) {
+        next(e)
     }
 }
 
-export const patchItem = async (req: Request, res: Response) => {
+export const patchItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.body
-        const valid = shoppingListItemModel.updateModel.validate(data)
-        if (!valid) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{message: "Bad request", reason: shoppingListItemModel.updateModel.validate.errors}],
-                result: null
-            })
-            return;
-        }
-        const userInfo = await getUserInfo(req)
-        if (!userInfo) {
-            res.status(401).send({
-                inputData: data,
-                errorMessages: [{message: "Cannot get user info..."}],
-                result: null
-            })
-            return;
-        }
-        const targetList = sls.find(list => list.id === data.shoppingListId)
-        if (!targetList) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{message: "Shopping list with this id doesnt exist"}],
-                result: null
-            })
-            return;
-        }
-        if (!getIsAuthorized(userInfo.sub, data.shoppingListId as string, ["owner"])) {
-            res.status(401).send({
-                inputData: data,
-                errorMessages: [{message: "You dont have permissions to update this object"}],
-                result: null
-            })
-            return;
-        }
-        const targetItem = targetList.items.find(item => item.id === data.id)
-        if (!targetItem) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{message: "Item with this id doesnt exist"}],
-                result: null
-            })
-            return;
-        }
-        targetItem.name = data.name as string
-        targetItem.solved = data.solved as boolean
-        return {
-            inputData: data,
-            errorMessages: [],
-            result: targetItem
-        }
-    } catch (exception) {
-        res.status(500).send(exception)
-    }
-}
-
-export const deleteItem = async (req: Request, res: Response) => {
-    try {
-        const data = req.body
-        const valid = shoppingListItemModel.deleteModel.validate(data)
-        if (!valid) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{
-                    message: "Bad request",
-                    reason: shoppingListItemModel.deleteModel.validate.errors
-                }],
-                result: null
-            })
-            return;
-        }
-        const userInfo = await getUserInfo(req)
-        if (!userInfo) {
-            res.status(401).send({
-                inputData: data,
-                errorMessages: [{message: "Cannot get user info..."}],
-                result: null
-            })
-            return;
-        }
-        const targetList = sls.find(list => list.id === data.shoppingListId)
-        if (!targetList) {
-            res.status(400).send({
-                inputData: data,
-                errorMessages: [{
-                    message: "Shopping list with this id doesnt exist",
-                }],
-                result: null
-            })
-            return;
-        }
-        if (!getIsAuthorized(userInfo.sub, data.shoppingListId as string, ["owner", "member"])) {
-            res.status(401).send({
-                inputData: data,
-                errorMessages: [{message: "You dont have permissions to delete this object"}],
-                result: null
-            })
-            return;
-        }
-        targetList.items = targetList.items.filter(item => item.id !== data.id)
-        return {
-            inputData: data,
-            errorMessages: [],
-            result: null
-        }
-    } catch (exception) {
-        res.status(500).send(exception)
-    }
-}
-
-// @ts-ignore
-async function getUserInfo(req: Request): Promise<User | null> {
-    try {
-        if (!req.auth) return null;
-        const userInfoRequest = await axios.get("https://dev-ducb3de5dqthsoxl.us.auth0.com/userinfo", {
-            headers: {
-                Authorization: `Bearer ${req.auth.token}`
+        shoppingListItemModel.updateModel.validate(data)
+        await getIsAuthorized(req.auth?.payload.sub, data.shoppingListId as string, ["owner"])
+        const shoppingListToUpdate = await prisma.shoppingList.findFirst({
+            where: {
+                id: data.shoppingListId
+            }
+        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        if (!shoppingListToUpdate) throw ThrowableError("Shopping list with given id does not exist", 400, "shoppingList.notFound")
+        const shoppingListItemToUpdateIndex = shoppingListToUpdate.items.findIndex(item => item.id === data.id)
+        if(shoppingListItemToUpdateIndex === -1) throw ThrowableError("Shopping list item with this id does not exist", 400, "shoppingListItem.update.notFound")
+        Object.keys(data).forEach(key => {
+            if(shoppingListToUpdate.items[shoppingListItemToUpdateIndex][key] !== undefined) {
+                shoppingListToUpdate.items[shoppingListItemToUpdateIndex][key] = data[key]
             }
         })
-        return userInfoRequest.data as unknown as User
+        const updatedShoppingList = await prisma.shoppingList.update({
+            where: {
+                id: data.shoppingListId
+            },
+            data: {
+                items: shoppingListToUpdate.items
+            }
+        }).catch((e)=>{console.log(e);throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        return updatedShoppingList
     } catch (e) {
-        return null
+        next(e)
+    }
+}
+
+export const deleteItem = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = req.body
+        shoppingListItemModel.deleteModel.validate(data)
+        await  getIsAuthorized(req.auth?.payload.sub, data.shoppingListId as string, ["owner", "member"])
+        const shoppingListToUpdate = await prisma.shoppingList.findFirst({
+            where: {
+                id: data.shoppingListId
+            }
+        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        if (!shoppingListToUpdate) throw ThrowableError("Shopping list with given id does not exist", 400, "shoppingList.notFound")
+        const previousCount = shoppingListToUpdate.items.length
+        shoppingListToUpdate.items = shoppingListToUpdate.items.filter(item => item.id !== data.id)
+        if(previousCount === shoppingListToUpdate.items.length) throw ThrowableError("Shopping list item with this id does not exist", 400, "shoppingListItem.delete.notFound")
+        const updatedShoppingList = await prisma.shoppingList.update({
+            where: {
+                id: data.shoppingListId
+            },
+            data: {
+                items: shoppingListToUpdate.items
+            }
+        }).catch((e)=>{console.log(e);throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        return updatedShoppingList
+    } catch (e) {
+        next(e)
     }
 }
