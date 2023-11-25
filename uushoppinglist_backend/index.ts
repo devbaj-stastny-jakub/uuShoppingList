@@ -11,7 +11,7 @@ const app = express();
 const port = 3001;
 export const prisma = new PrismaClient()
 
-app.use(cors())
+app.use(cors({credentials: true, origin: true}))
 app.use(express.json({limit: "50mb"}));
 
 app.use("/shoppingList", shoppingListRouter)
@@ -22,7 +22,9 @@ app.get('/', (req,res)=>{
 })
 
 app.use(errorHandler)
-
+app.listen(3002, ()=>{
+    console.log("server is running at port 3002")
+})
 https
     .createServer(
         // Provide the private and public key to the server by reading each
@@ -34,5 +36,5 @@ https
         app
     )
     .listen(3001, () => {
-        console.log("server is runing at port 3001");
+        console.log("server is running at port 3001");
     });
