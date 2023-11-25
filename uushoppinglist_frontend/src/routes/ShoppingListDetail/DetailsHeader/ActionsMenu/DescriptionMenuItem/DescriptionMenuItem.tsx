@@ -1,5 +1,5 @@
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -50,7 +50,9 @@ export const DescriptionMenuItem = ()=>{
                     <Button onClick={() => {
                         setOpened(false)
                     }} color={"info"}>Zrušit</Button>
-                    <Button color={"success"} onClick={()=>{handleRename()}} variant={"contained"}>Upravit</Button>
+                    <Button color={"success"} onClick={()=>{handleRename()}} variant={"contained"}>
+                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Upravit"}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

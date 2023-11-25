@@ -1,5 +1,5 @@
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -50,7 +50,9 @@ export const RenameMenuItem = ()=>{
                     <Button onClick={() => {
                         setOpened(false)
                     }} color={"info"}>Zrušit</Button>
-                    <Button color={"success"} onClick={()=>{handleRename()}} variant={"contained"}>Přejmenovat</Button>
+                    <Button color={"success"} onClick={()=>{handleRename()}} variant={"contained"}>
+                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Přejmenovat"}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

@@ -1,4 +1,4 @@
-import {MenuItem} from "@mui/material";
+import {CircularProgress, MenuItem} from "@mui/material";
 import {useAppDispatch, useAppSelector, usePatchShoppingList} from "../../../../../hooks";
 import {editShoppingListValues, setShoppingList} from "../../../../../store/shoppingListSlice";
 import {useEffect} from "react";
@@ -15,6 +15,8 @@ export const ArchiveMenuItem = ()=>{
         data && dispatch(setShoppingList(data))
     }, [data]);
     return (
-        <MenuItem onClick={handleArchive}>{shoppingList?.isArchived ? "Odarchivovat":"Archivovat"}</MenuItem>
+        <MenuItem onClick={handleArchive}>
+            {loading ? <CircularProgress size={20} sx={{color: "black"}}/> : shoppingList?.isArchived ? "Odarchivovat":"Archivovat"}
+        </MenuItem>
     )
 }

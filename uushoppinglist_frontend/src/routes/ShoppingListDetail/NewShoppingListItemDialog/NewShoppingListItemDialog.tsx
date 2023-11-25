@@ -1,4 +1,4 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import {useEffect, useState} from "react";
 import {createShoppingListItem, setShoppingList} from "../../../store/shoppingListSlice";
 import {useAppDispatch, useAppSelector, useCreateShoppingListItem} from "../../../hooks";
@@ -14,7 +14,7 @@ export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListIt
     const {shoppingList} = useAppSelector(state => state.shoppingList)
     const {loading, data, create} = useCreateShoppingListItem({shoppingListId: shoppingList?.id || "", name: name})
     const handleCreateShoppingListItem = () => {
-        create().then(()=>{
+        create().then(() => {
             handleClose(false)
         })
     }
@@ -22,7 +22,9 @@ export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListIt
         data && dispatch(setShoppingList(data))
     }, [data]);
     return (
-        <Dialog open={open} onClose={()=>{handleClose(false)}}>
+        <Dialog open={open} onClose={() => {
+            handleClose(false)
+        }}>
             <DialogTitle>
                 Zadejte název položky seznamu
             </DialogTitle>
@@ -39,7 +41,9 @@ export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListIt
                     handleClose(false)
                     handleCreateShoppingListItem()
                     setName("")
-                }} variant={"contained"} color={"success"}>Vytvořit</Button>
+                }} variant={"contained"} color={"success"}>
+                    {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Vytvořit"}
+                </Button>
             </DialogActions>
         </Dialog>
     )

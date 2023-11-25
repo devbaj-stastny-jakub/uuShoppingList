@@ -1,5 +1,5 @@
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -38,7 +38,9 @@ export const DeleteMenuItem = ()=>{
                     <Button onClick={() => {
                         setOpened(false)
                     }} color={"info"}>Zrušit</Button>
-                    <Button color={"error"} onClick={()=>{handleDelete()}} variant={"contained"}>Smazat</Button>
+                    <Button color={"error"} onClick={()=>{handleDelete()}} variant={"contained"}>
+                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Smazat"}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

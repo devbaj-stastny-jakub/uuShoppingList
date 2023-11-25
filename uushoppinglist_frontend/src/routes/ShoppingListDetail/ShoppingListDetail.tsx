@@ -1,6 +1,6 @@
 import {
     Button,
-    Container,
+    Container, Skeleton,
     Stack,
     ToggleButton,
     ToggleButtonGroup, useMediaQuery, useTheme,
