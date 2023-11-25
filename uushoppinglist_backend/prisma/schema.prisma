@@ -21,6 +21,11 @@ model ShoppingList {
   items       ShoppingListItem[]
   createdAt   DateTime?          @default(now())
   updatedAt   DateTime?          @updatedAt
+
+  @@index([ownerId])
+  @@index([membersIds])
+  @@index([isArchived, ownerId])
+  @@index([isArchived, membersIds])
 }
 
 type ShoppingListItem {

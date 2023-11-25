@@ -1,13 +1,20 @@
 import {MenuItem} from "@mui/material";
-import {useAppDispatch} from "../../../../../hooks";
-import {editShoppingListValues} from "../../../../../store/shoppingListSlice";
+import {useAppDispatch, useAppSelector, usePatchShoppingList} from "../../../../../hooks";
+import {editShoppingListValues, setShoppingList} from "../../../../../store/shoppingListSlice";
+import {useEffect} from "react";
 
 export const ArchiveMenuItem = ()=>{
     const dispatch = useAppDispatch()
+    const {loading, data, update} = usePatchShoppingList()
+    const {shoppingList} = useAppSelector(state => state.shoppingList)
     const handleArchive = ()=>{
-        dispatch(editShoppingListValues([{key: "archived", value: true}]))
+        if(!shoppingList) return
+        update({id: shoppingList.id, isArchived: !shoppingList.isArchived})
     }
+    useEffect(() => {
+        data && dispatch(setShoppingList(data))
+    }, [data]);
     return (
-        <MenuItem onClick={handleArchive}>Archivovat</MenuItem>
+        <MenuItem onClick={handleArchive}>{shoppingList?.isArchived ? "Odarchivovat":"Archivovat"}</MenuItem>
     )
 }

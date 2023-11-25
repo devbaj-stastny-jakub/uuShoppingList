@@ -22,7 +22,9 @@ export const createItem = async (req: Request, res: Response, next: NextFunction
                     }
                 }
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
+        })
         return updatedShoppingList
     } catch (e) {
         next(e)
@@ -38,12 +40,14 @@ export const patchItem = async (req: Request, res: Response, next: NextFunction)
             where: {
                 id: data.shoppingListId
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
+        })
         if (!shoppingListToUpdate) throw ThrowableError("Shopping list with given id does not exist", 400, "shoppingList.notFound")
         const shoppingListItemToUpdateIndex = shoppingListToUpdate.items.findIndex(item => item.id === data.id)
-        if(shoppingListItemToUpdateIndex === -1) throw ThrowableError("Shopping list item with this id does not exist", 400, "shoppingListItem.update.notFound")
+        if (shoppingListItemToUpdateIndex === -1) throw ThrowableError("Shopping list item with this id does not exist", 400, "shoppingListItem.update.notFound")
         Object.keys(data).forEach(key => {
-            if(shoppingListToUpdate.items[shoppingListItemToUpdateIndex][key] !== undefined) {
+            if (shoppingListToUpdate.items[shoppingListItemToUpdateIndex][key] !== undefined) {
                 shoppingListToUpdate.items[shoppingListItemToUpdateIndex][key] = data[key]
             }
         })
@@ -54,7 +58,9 @@ export const patchItem = async (req: Request, res: Response, next: NextFunction)
             data: {
                 items: shoppingListToUpdate.items
             }
-        }).catch((e)=>{console.log(e);throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        }).catch((e) => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
+        })
         return updatedShoppingList
     } catch (e) {
         next(e)
@@ -65,16 +71,18 @@ export const deleteItem = async (req: Request, res: Response, next: NextFunction
     try {
         const data = req.body
         shoppingListItemModel.deleteModel.validate(data)
-        await  getIsAuthorized(req.auth?.payload.sub, data.shoppingListId as string, ["owner", "member"])
+        await getIsAuthorized(req.auth?.payload.sub, data.shoppingListId as string, ["owner", "member"])
         const shoppingListToUpdate = await prisma.shoppingList.findFirst({
             where: {
                 id: data.shoppingListId
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
+        })
         if (!shoppingListToUpdate) throw ThrowableError("Shopping list with given id does not exist", 400, "shoppingList.notFound")
         const previousCount = shoppingListToUpdate.items.length
         shoppingListToUpdate.items = shoppingListToUpdate.items.filter(item => item.id !== data.id)
-        if(previousCount === shoppingListToUpdate.items.length) throw ThrowableError("Shopping list item with this id does not exist", 400, "shoppingListItem.delete.notFound")
+        if (previousCount === shoppingListToUpdate.items.length) throw ThrowableError("Shopping list item with this id does not exist", 400, "shoppingListItem.delete.notFound")
         const updatedShoppingList = await prisma.shoppingList.update({
             where: {
                 id: data.shoppingListId
@@ -82,7 +90,10 @@ export const deleteItem = async (req: Request, res: Response, next: NextFunction
             data: {
                 items: shoppingListToUpdate.items
             }
-        }).catch((e)=>{console.log(e);throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")})
+        }).catch((e) => {
+            console.log(e);
+            throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
+        })
         return updatedShoppingList
     } catch (e) {
         next(e)

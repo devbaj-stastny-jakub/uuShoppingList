@@ -54,6 +54,7 @@ export const shoppingListSlice = createSlice({
                 id: Math.floor(Math.random() * 100000).toString(),
                 name: action.payload,
                 solved: false,
+                createdAt: new Date().toISOString()
             })
         },
         deleteShoppingListItem: (state, action: PayloadAction<string>) => {

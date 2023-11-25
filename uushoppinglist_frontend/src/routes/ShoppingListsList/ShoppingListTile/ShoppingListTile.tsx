@@ -7,6 +7,8 @@ import {useProfile} from "../../../hooks/authorization";
 import {useMemo} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 import {DeleteButton} from "./DeleteButton";
+import {useAppDispatch, useDeleteShoppingList} from "../../../hooks";
+import {deleteShoppingList} from "../../../store/shoppingListsListSlice";
 
 export interface ShoppingListTileProps {
     id: string
@@ -25,6 +27,7 @@ export const ShoppingListTile = ({ownerId, image, id, name, membersIds}:Shopping
     const handleClick = ()=>{
         navigate(`/shoppingList/${id}`)
     }
+
     return (
         <Grid xs={12} sm={6} md={4} onClick={handleClick} sx={{cursor: "pointer"}}>
             <Stack position={"relative"} sx={{borderRadius: 2, overflow:"hidden", boxShadow: "0 0 10px #C5C5C5"}}>

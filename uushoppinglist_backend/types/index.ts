@@ -13,7 +13,7 @@ export interface ShoppingList {
     name: string
     description: string | null
     image: string
-    archived: boolean
+    isArchived: boolean
     ownerId: string
     membersIds: string[]
     items: ShoppingListItem[]

@@ -28,7 +28,7 @@ const updateModel = {
             type: "string",
             nullable: true
         },
-        archived: {
+        isArchived: {
             type: "boolean",
         },
         ownerId: {

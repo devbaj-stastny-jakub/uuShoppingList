@@ -1,7 +1,7 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
-import {useState} from "react";
-import {createShoppingListItem} from "../../../store/shoppingListSlice";
-import {useAppDispatch} from "../../../hooks";
+import {useEffect, useState} from "react";
+import {createShoppingListItem, setShoppingList} from "../../../store/shoppingListSlice";
+import {useAppDispatch, useAppSelector, useCreateShoppingListItem} from "../../../hooks";
 
 export interface NewShoppingListItemDialogProps {
     open: boolean
@@ -11,9 +11,16 @@ export interface NewShoppingListItemDialogProps {
 export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListItemDialogProps) => {
     const [name, setName] = useState("")
     const dispatch = useAppDispatch()
-    const handleCreateShoppingListItem = (name: string) => {
-        dispatch(createShoppingListItem(name))
+    const {shoppingList} = useAppSelector(state => state.shoppingList)
+    const {loading, data, create} = useCreateShoppingListItem({shoppingListId: shoppingList?.id || "", name: name})
+    const handleCreateShoppingListItem = () => {
+        create().then(()=>{
+            handleClose(false)
+        })
     }
+    useEffect(() => {
+        data && dispatch(setShoppingList(data))
+    }, [data]);
     return (
         <Dialog open={open} onClose={()=>{handleClose(false)}}>
             <DialogTitle>
@@ -30,7 +37,7 @@ export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListIt
                 }} color={"info"}>Zrušit</Button>
                 <Button onClick={() => {
                     handleClose(false)
-                    handleCreateShoppingListItem(name)
+                    handleCreateShoppingListItem()
                     setName("")
                 }} variant={"contained"} color={"success"}>Vytvořit</Button>
             </DialogActions>

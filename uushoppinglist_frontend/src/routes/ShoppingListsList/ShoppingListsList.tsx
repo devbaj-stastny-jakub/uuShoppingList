@@ -11,13 +11,18 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import {useEffect, useMemo, useState} from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import {ShoppingListTile} from "./ShoppingListTile";
-import {useAppDispatch, useAppSelector, useGetShoppingLists} from "../../hooks";
+import {useAppDispatch, useAppSelector, useCreateShoppingList, useGetShoppingLists} from "../../hooks";
 import {setShoppingLists} from "../../store/shoppingListsListSlice";
+import {useNavigate} from "react-router-dom";
 
 export const ShoppingListsList = () => {
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
     const [itemsFilter, setItemsFilter] = useState<"active" | "archived">("active")
+
     const {shoppingLists: sls, loading} = useGetShoppingLists()
+    const {data, create, loading: loadingCreate} = useCreateShoppingList()
+
     useEffect(() => {
         dispatch(setShoppingLists(sls))
     }, [sls]);
@@ -27,25 +32,17 @@ export const ShoppingListsList = () => {
     const filteredShoppingLists = useMemo(() => {
         return shoppingLists.filter(shoppingList => {
             const archived = itemsFilter === "archived"
-            if (shoppingList.archived === archived) {
-                return true
-            } else {
-                return false
-            }
+            return shoppingList.isArchived === archived;
         })
     }, [shoppingLists, itemsFilter])
-    const handleCreateList = ()=>{
-        const newList = {...shoppingLists[0]}
-        newList.name = "Nový nákupní seznam"
-        const options = "abcdefghijlmnopqrtuvwxyz1234567890"
-        let generatedId = ""
-        for(let x = 0;x < 24;x++) {
-            generatedId += options[Math.floor(Math.random() * options.length)]
-        }
-        console.debug(generatedId)
-        newList.id = generatedId
-        dispatch(setShoppingLists([...shoppingLists, newList]))
+    const handleCreateList = async ()=>{
+        create()
     }
+    useEffect(() => {
+        if(data?.id) {
+            navigate(`/shoppingList/${data.id}`)
+        }
+    }, [data]);
     return (
         <Container maxWidth={"md"}>
             <Stack direction={{xs: "column", sm: "row"}} mt={3} spacing={2} justifyContent={"space-between"}>

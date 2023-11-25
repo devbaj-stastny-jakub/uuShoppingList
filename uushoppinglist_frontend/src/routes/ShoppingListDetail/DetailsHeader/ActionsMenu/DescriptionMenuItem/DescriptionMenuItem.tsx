@@ -8,13 +8,14 @@ import {
     TextField
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import {useAppDispatch, useAppSelector} from "../../../../../hooks";
-import {editShoppingListValues} from "../../../../../store/shoppingListSlice";
+import {useAppDispatch, useAppSelector, usePatchShoppingList} from "../../../../../hooks";
+import {editShoppingListValues, setShoppingList} from "../../../../../store/shoppingListSlice";
 
 export const DescriptionMenuItem = ()=>{
     const [opened, setOpened] = useState(false)
     const [name, setName] = useState("")
     const {shoppingList} = useAppSelector(state => state.shoppingList)
+    const {loading, data, update} = usePatchShoppingList()
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -23,9 +24,14 @@ export const DescriptionMenuItem = ()=>{
     }, [shoppingList]);
 
     const handleRename = ()=>{
-        dispatch(editShoppingListValues([{key: "description", value: name}]))
-        setOpened(false)
+        if(!shoppingList) return
+        update({id: shoppingList.id, description: name}).then(()=>{
+            setOpened(false)
+        })
     }
+    useEffect(() => {
+        data && dispatch(setShoppingList(data))
+    }, [data]);
 
     return(
         <>

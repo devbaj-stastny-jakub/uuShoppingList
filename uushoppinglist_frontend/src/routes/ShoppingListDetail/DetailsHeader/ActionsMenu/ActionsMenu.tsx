@@ -9,6 +9,7 @@ import {LeaveMenuItem} from "./LeaveMenuItem";
 import {useProfile} from "../../../../hooks/authorization";
 import {useAppDispatch, useAppSelector} from "../../../../hooks";
 import {useNavigate} from "react-router-dom";
+import {DeleteMenuItem} from "./DeleteMenuItem";
 
 export const ActionsMenu = () => {
     const dispatch = useAppDispatch()
@@ -41,7 +42,7 @@ export const ActionsMenu = () => {
                         <DescriptionMenuItem/>
                         <ArchiveMenuItem/>
                         <UsersMenuItem/>
-                        <MenuItem onClick={handleDelete} sx={{color: "error.main"}}>Smazat</MenuItem>
+                        <DeleteMenuItem />
                     </>
                 )}
                 {!isOwner && (

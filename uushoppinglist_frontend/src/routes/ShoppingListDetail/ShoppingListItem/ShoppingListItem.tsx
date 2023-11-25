@@ -1,9 +1,9 @@
 import {Checkbox, IconButton, Stack, Typography} from "@mui/material";
 import {DeleteOutline} from "@mui/icons-material";
 import Grid from "@mui/material/Unstable_Grid2";
-import {ChangeEvent} from "react";
-import {deleteShoppingListItem, setShoppingListItemState} from "../../../store/shoppingListSlice";
-import {useAppDispatch} from "../../../hooks";
+import {ChangeEvent, useEffect} from "react";
+import {deleteShoppingListItem, setShoppingList, setShoppingListItemState} from "../../../store/shoppingListSlice";
+import {useAppDispatch, useAppSelector, useDeleteShoppingListItem, usePatchShoppingListItem} from "../../../hooks";
 
 export interface ShoppingListItemProps {
     id: string
@@ -13,12 +13,22 @@ export interface ShoppingListItemProps {
 
 export const ShoppingListItem = ({id, solved, name}: ShoppingListItemProps) => {
     const dispatch = useAppDispatch()
-
+    const {loading, data, update} = usePatchShoppingListItem()
+    const {deleteList} = useDeleteShoppingListItem()
+    const {shoppingList} = useAppSelector(state => state.shoppingList)
     const handleShoppingListItemStateChange = (id: string, checked: boolean) => {
-        dispatch(setShoppingListItemState({id: id, checked: checked}))
+        if(!shoppingList?.id) return
+        update({id: id, shoppingListId: shoppingList.id, solved: checked})
     }
+    useEffect(() => {
+        data && dispatch(setShoppingList(data))
+    }, [data]);
+
     const handleShoppingListItemDelete = (id: string) => {
-        dispatch(deleteShoppingListItem(id))
+        if(!shoppingList?.id) return
+        deleteList({shoppingListId: shoppingList.id, id}).then(()=>{
+            dispatch(deleteShoppingListItem(id))
+        })
     }
     return (
         <Grid xs={12} sm={6}>

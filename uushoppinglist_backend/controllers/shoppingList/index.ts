@@ -1,8 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import {shoppingListModel} from "../../models/shoppingList";
-import {getIsAuthorized} from "../../helpers";
+import {getIsAuthorized, getProfile} from "../../helpers";
 import {ThrowableError} from "../../errors";
 import {prisma} from "../../index";
+import {ShoppingList} from "../../types";
 
 export const getListsList = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -19,7 +20,9 @@ export const getListsList = async (req: Request, res: Response, next: NextFuncti
                     }
                 ]
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")})
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")
+        })
         return shoppingLists
     } catch (e) {
         next(e)
@@ -35,8 +38,11 @@ export const getList = async (req: Request, res: Response, next: NextFunction) =
             where: {
                 id: data
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")})
-        return targetList
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")
+        })
+        const profile = getProfile(req.auth?.payload.sub || "", targetList as unknown as ShoppingList)
+        return {...targetList, profile}
     } catch (e) {
         next(e)
     }
@@ -51,8 +57,10 @@ export const createList = async (req: Request, res: Response, next: NextFunction
                 name: "Nový nákupní seznam",
                 image: "https://as2.ftcdn.net/v2/jpg/02/37/34/63/1000_F_237346369_ktPSCiSI20SZvMGMn4HA96aDW5QVNmjx.jpg"
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")})
-        return createdShoppingList
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")
+        })
+        return {...createdShoppingList, profile: "owner"}
     } catch (e) {
         next(e)
     }
@@ -73,8 +81,11 @@ export const patchList = async (req: Request, res: Response, next: NextFunction)
                     id: undefined
                 }
             }
-        ).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")})
-        return updatedShoppingList
+        ).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")
+        })
+        const profile = getProfile(req.auth?.payload.sub || "", updatedShoppingList as unknown as ShoppingList)
+        return {...updatedShoppingList, profile}
     } catch (e) {
         next(e)
     }
@@ -89,7 +100,9 @@ export const deleteList = async (req: Request, res: Response, next: NextFunction
             where: {
                 id: data.id
             }
-        }).catch(()=>{throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")})
+        }).catch(() => {
+            throw ThrowableError("Database error, check logs", 500, "shoppingList.unknown")
+        })
         return {}
     } catch (e) {
         next(e)

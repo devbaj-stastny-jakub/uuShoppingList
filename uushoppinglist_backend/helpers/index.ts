@@ -1,8 +1,8 @@
-import {sls} from "../data";
 import {ThrowableError} from "../errors";
 import {prisma} from "../index";
+import {ShoppingList} from "../types";
 
-export const getProfile = async (userId: string, listId: string): Promise<null | "owner" | "member"> =>{
+export const getProfileFetch = async (userId: string, listId: string): Promise<null | "owner" | "member"> =>{
     const targetList = await prisma.shoppingList.findUnique({
         where: {
             id: listId
@@ -16,8 +16,14 @@ export const getProfile = async (userId: string, listId: string): Promise<null |
     return null
 }
 
+export const getProfile = (userId, list: ShoppingList): null | "owner" | "member" =>{
+    if(list.ownerId === userId) return "owner"
+    if(!!list.membersIds.find(id=>id===userId)) return "member"
+    return null
+}
+
 export const getIsAuthorized = async (userId: string | undefined = "", listId: string, profiles: ("owner" | "member")[])=>{
-    const profile = await getProfile(userId, listId)
+    const profile = await getProfileFetch(userId, listId)
     let authorized = false;
     profiles.forEach(profileL=>{
         if(profileL === profile) authorized = true
