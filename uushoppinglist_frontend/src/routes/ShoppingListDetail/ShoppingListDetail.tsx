@@ -15,10 +15,11 @@ import {DetailsHeader} from "./DetailsHeader";
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import {setProfile, setShoppingList} from "../../store/shoppingListSlice";
 import {useGetShoppingList} from "../../hooks";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 export const ShoppingListDetail = () => {
     const {id} = useParams()
+    const navigate = useNavigate()
     const [shoppingListItems, setShoppingListItems] = useState<ShoppingListItemType[]>([])
     const [openDialog, setOpenDialog] = useState(false);
     const [itemsFilter, setItemsFilter] = useState<"all" | "unsolved">("unsolved")
@@ -26,11 +27,15 @@ export const ShoppingListDetail = () => {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
     const {shoppingList} = useAppSelector(state => state.shoppingList)
-    const {shoppingList: sl} = useGetShoppingList(id)
+    const {shoppingList: sl, error} = useGetShoppingList(id)
 
     useEffect(() => {
         sl && dispatch(setShoppingList(sl))
     }, [sl]);
+
+    useEffect(() => {
+        if(error) navigate("/shoppingLists")
+    }, [error]);
 
     useEffect(() => {
         if(!shoppingList) return;

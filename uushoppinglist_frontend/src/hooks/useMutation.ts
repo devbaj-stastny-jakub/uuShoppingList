@@ -9,11 +9,14 @@ import {
     UpdateShoppingListBody,
     UpdateShoppingListItemBody
 } from "../types";
+import {setError} from "../store/errorSlice";
+import {useAppDispatch} from "./store";
 
 export const useCreateShoppingList = () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<ShoppingList | null>(null)
     const {getAccessTokenSilently} = useAuth0()
+    const dispatch = useAppDispatch()
     const create = async () => {
         try {
             setLoading(true)
@@ -25,8 +28,8 @@ export const useCreateShoppingList = () => {
                 }
             })
             setData(res.data.result)
-        } catch (e) {
-            console.log(e)
+        } catch (e: any) {
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }
@@ -38,6 +41,7 @@ export const usePatchShoppingList = () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<ShoppingList | null>(null)
     const {getAccessTokenSilently} = useAuth0()
+    const dispatch = useAppDispatch()
     const update = async (data: UpdateShoppingListBody) => {
         try {
             setLoading(true)
@@ -50,8 +54,8 @@ export const usePatchShoppingList = () => {
                 data: data
             })
             setData(res.data.result)
-        } catch (e) {
-            console.log(e)
+        } catch (e: any) {
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }
@@ -62,6 +66,7 @@ export const usePatchShoppingList = () => {
 export const useDeleteShoppingList = (shoppingListId: string) => {
     const [loading, setLoading] = useState(false)
     const {getAccessTokenSilently} = useAuth0()
+    const dispatch = useAppDispatch()
     const deleteList = async () => {
         try {
             setLoading(true)
@@ -75,8 +80,8 @@ export const useDeleteShoppingList = (shoppingListId: string) => {
                     id: shoppingListId
                 }
             })
-        } catch (e) {
-            console.log(e)
+        } catch (e: any) {
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }
@@ -88,6 +93,7 @@ export const useCreateShoppingListItem = (body: CreateShoppingListItemBody) => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<ShoppingList | null>(null)
     const {getAccessTokenSilently} = useAuth0()
+    const dispatch = useAppDispatch()
     const create = async () => {
         try {
             setLoading(true)
@@ -100,8 +106,8 @@ export const useCreateShoppingListItem = (body: CreateShoppingListItemBody) => {
                 data: body
             })
             setData(res.data.result)
-        } catch (e) {
-            console.log(e)
+        } catch (e: any) {
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }
@@ -113,6 +119,7 @@ export const usePatchShoppingListItem = () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<ShoppingList | null>(null)
     const {getAccessTokenSilently} = useAuth0()
+    const dispatch = useAppDispatch()
     const update = async (data: UpdateShoppingListItemBody) => {
         try {
             setLoading(true)
@@ -125,8 +132,8 @@ export const usePatchShoppingListItem = () => {
                 data: data
             })
             setData(res.data.result)
-        } catch (e) {
-            console.log(e)
+        } catch (e: any) {
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }
@@ -137,6 +144,7 @@ export const usePatchShoppingListItem = () => {
 export const useDeleteShoppingListItem = () => {
     const [loading, setLoading] = useState(false)
     const {getAccessTokenSilently} = useAuth0()
+    const dispatch = useAppDispatch()
     const deleteList = async (data: DeleteShoppingListItemDelete) => {
         try {
             setLoading(true)
@@ -148,8 +156,8 @@ export const useDeleteShoppingListItem = () => {
                 },
                 data: data
             })
-        } catch (e) {
-            console.log(e)
+        } catch (e: any) {
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }

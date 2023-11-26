@@ -3,10 +3,13 @@ import {ShoppingList} from "../types";
 import axios from "axios"
 import {backend} from "../config"
 import {useAuth0} from "@auth0/auth0-react";
+import {setError} from "../store/errorSlice";
+import {useAppDispatch} from "./store";
 
 export const useGetShoppingLists = () => {
     const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([])
     const [loading, setLoading] = useState(true)
+    const dispatch = useAppDispatch()
     const {getAccessTokenSilently, user} = useAuth0()
     const handleFetch = async ()=>{
         try {
@@ -21,7 +24,7 @@ export const useGetShoppingLists = () => {
             })
             setShoppingLists(response.data.result as unknown as ShoppingList[])
         } catch (e: any) {
-            console.debug(e)
+            dispatch(setError(e.response.data.error.message))
         } finally {
             setLoading(false)
         }

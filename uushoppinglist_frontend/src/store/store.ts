@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import shoppingListReducer from "./shoppingListSlice"
 import shoppingListsListReducer from "./shoppingListsListSlice"
+import errorReducer from "./errorSlice"
 
 export const store = configureStore({
     reducer: {
         shoppingList: shoppingListReducer,
-        shoppingListsList: shoppingListsListReducer
+        shoppingListsList: shoppingListsListReducer,
+        error: errorReducer
     }
 })
 

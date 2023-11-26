@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     BrowserRouter,
     createBrowserRouter,
@@ -10,19 +10,27 @@ import {
 } from "react-router-dom";
 import {ShoppingListDetail} from "../routes/ShoppingListDetail";
 import {
+    Alert,
     Box,
     Button, CircularProgress,
-    Container,
+    Container, Snackbar,
     Stack,
     useTheme
 } from "@mui/material";
 import {useAuth0} from "@auth0/auth0-react";
 import {ShoppingListsList} from "../routes/ShoppingListsList";
 import {NavLink} from "./NavLink";
+import {useAppSelector} from "../hooks";
 
 export const Router = () => {
+    const [open, setOpen] = useState(false)
     const {loginWithRedirect, isAuthenticated, logout, isLoading} = useAuth0()
+    const {message} = useAppSelector(state => state.error)
     const theme = useTheme()
+    useEffect(() => {
+        if(!message) return
+        setOpen(true)
+    }, [message]);
     return (
         <BrowserRouter>
             {isLoading ? (
@@ -32,6 +40,11 @@ export const Router = () => {
             ) : (
                 <>
                     <Stack sx={{backgroundColor: "text.primary"}}>
+                        <Snackbar open={open} autoHideDuration={6000} onClose={()=>{setOpen(false)}}>
+                            <Alert onClose={()=>{setOpen(false)}} severity="error" sx={{ width: '100%' }}>
+                                {message}
+                            </Alert>
+                        </Snackbar>
                         <Container>
                             <Stack direction={"row"} justifyContent={"space-between"}>
                                 <Stack direction={"row"}>
