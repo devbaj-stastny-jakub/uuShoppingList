@@ -33,15 +33,11 @@ const updateModel = {
         },
         ownerId: {
             type: "string",
-            minLength: 24,
-            maxLength: 24
         },
         membersIds: {
             type: "array",
             items: {
                 type: "string",
-                minLength: 24,
-                maxLength: 24
             }
         },
         /*items: {

@@ -1,11 +1,13 @@
 export interface User {
-    sub: string
-    nickname: string
-    name: string
-    picture: string
-    updated_at: string
+    id: string
+    user_id: string
     email: string
-    email_verified: boolean
+    name: string
+    username: string
+    password: string
+    picture: string
+    created_at: string
+    updated_at: string
 }
 
 export interface ShoppingList {

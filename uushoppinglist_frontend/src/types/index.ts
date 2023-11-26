@@ -12,6 +12,18 @@ export interface ShoppingList {
     updatedAt: string | null
 }
 
+export interface User {
+    id: string
+    user_id: string
+    email: string
+    name: string
+    username: string
+    password: string
+    picture: string
+    created_at: string
+    updated_at: string
+}
+
 export interface UpdateShoppingListBody {
     id: string
     name?: string
