@@ -1,9 +1,10 @@
 import {NextFunction, Request, Response} from "express";
 import {shoppingListItemModel} from "../../models/shoppingListItem";
 import * as crypto from "crypto";
-import {getIsAuthorized} from "../../helpers";
+import {getIsAuthorized, getProfile} from "../../helpers";
 import {ThrowableError} from "../../errors";
 import {prisma} from "../../index";
+import {ShoppingList} from "../../types";
 
 export const createItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -25,7 +26,8 @@ export const createItem = async (req: Request, res: Response, next: NextFunction
         }).catch(() => {
             throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
         })
-        return updatedShoppingList
+        const profile = getProfile(req.auth?.payload.sub || "", updatedShoppingList as unknown as ShoppingList)
+        return {...updatedShoppingList, profile: profile}
     } catch (e) {
         next(e)
     }
@@ -61,7 +63,8 @@ export const patchItem = async (req: Request, res: Response, next: NextFunction)
         }).catch((e) => {
             throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
         })
-        return updatedShoppingList
+        const profile = getProfile(req.auth?.payload.sub || "", updatedShoppingList as unknown as ShoppingList)
+        return {...updatedShoppingList, profile: profile}
     } catch (e) {
         next(e)
     }
@@ -94,7 +97,8 @@ export const deleteItem = async (req: Request, res: Response, next: NextFunction
             console.log(e);
             throw ThrowableError("Database error, check logs", 500, "shoppingListItem.unknown")
         })
-        return updatedShoppingList
+        const profile = getProfile(req.auth?.payload.sub || "", updatedShoppingList as unknown as ShoppingList)
+        return {...updatedShoppingList, profile: profile}
     } catch (e) {
         next(e)
     }
