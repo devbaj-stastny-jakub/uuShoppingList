@@ -16,8 +16,10 @@ import {useAppDispatch, useAppSelector} from "../../hooks";
 import {setProfile, setShoppingList} from "../../store/shoppingListSlice";
 import {useGetShoppingList} from "../../hooks";
 import {useNavigate, useParams} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 export const ShoppingListDetail = () => {
+    const {t}=useTranslation()
     const {id} = useParams()
     const navigate = useNavigate()
     const [shoppingListItems, setShoppingListItems] = useState<ShoppingListItemType[]>([])
@@ -60,15 +62,15 @@ export const ShoppingListDetail = () => {
                     setItemsFilter(state)
                 }} value={itemsFilter} color={"primary"}>
                     <ToggleButton value={"unsolved"}>
-                        Nevyřešené
+                        {t("shopping_list_detail.unsolved")}
                     </ToggleButton>
                     <ToggleButton value={"all"}>
-                        Všechny
+                        {t("shopping_list_detail.everything")}
                     </ToggleButton>
                 </ToggleButtonGroup>
                 <Button onClick={() => {
                     setOpenDialog(true)
-                }} startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>Přidat položku</Button>
+                }} startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>{t("shopping_list_detail.add_item")}</Button>
             </Stack>
             <Grid container mt={3} spacing={2}>
                 {shoppingListItems && shoppingListItems.map(shoppingListItem => (

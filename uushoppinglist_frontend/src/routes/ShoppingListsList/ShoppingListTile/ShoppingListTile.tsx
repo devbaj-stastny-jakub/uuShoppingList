@@ -34,7 +34,7 @@ export const ShoppingListTile = ({ownerId, image, id, name, membersIds}:Shopping
                 <img style={{height: 150, width: "100%", objectFit: "cover"}} src={"/placeholder.png"} alt=""/>
                 {isOwner && <DeleteButton id={id} />}
                 <Stack spacing={0.5} p={1}>
-                    <Typography fontSize={14} fontWeight={"bold"}>{name}</Typography>
+                    <Typography fontSize={14} color={"text.primary"} fontWeight={"bold"}>{name}</Typography>
                     <Typography fontSize={14} color={"#938F96"}>{ownerId}{membersIds.toString()}</Typography>
                 </Stack>
             </Stack>

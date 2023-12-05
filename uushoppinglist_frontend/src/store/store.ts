@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import shoppingListReducer from "./shoppingListSlice"
 import shoppingListsListReducer from "./shoppingListsListSlice"
 import errorReducer from "./errorSlice"
+import settingsReducer from "./settingsSlice"
 
 export const store = configureStore({
     reducer: {
         shoppingList: shoppingListReducer,
         shoppingListsList: shoppingListsListReducer,
-        error: errorReducer
+        error: errorReducer,
+        settings: settingsReducer
     }
 })
 

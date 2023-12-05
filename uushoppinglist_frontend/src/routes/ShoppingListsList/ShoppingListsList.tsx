@@ -14,8 +14,10 @@ import {ShoppingListTile} from "./ShoppingListTile";
 import {useAppDispatch, useAppSelector, useCreateShoppingList, useGetShoppingLists} from "../../hooks";
 import {setShoppingLists} from "../../store/shoppingListsListSlice";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 export const ShoppingListsList = () => {
+    const {t}=useTranslation()
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [itemsFilter, setItemsFilter] = useState<"active" | "archived">("active")
@@ -50,13 +52,13 @@ export const ShoppingListsList = () => {
                     setItemsFilter(state)
                 }} value={itemsFilter} color={"primary"}>
                     <ToggleButton value={"active"}>
-                        Aktuální
+                        {t("shopping_lists.active")}
                     </ToggleButton>
                     <ToggleButton value={"archived"}>
-                        Archivované
+                        {t("shopping_lists.archived")}
                     </ToggleButton>
                 </ToggleButtonGroup>
-                <Button onClick={handleCreateList} startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>Přidat seznam</Button>
+                <Button onClick={handleCreateList} startIcon={<AddRoundedIcon/>} disableElevation variant={"contained"}>{t("shopping_lists.add_list")}</Button>
             </Stack>
             <Grid container mt={2} spacing={2}>
                 {!loading && filteredShoppingLists.map(shoppingList => (

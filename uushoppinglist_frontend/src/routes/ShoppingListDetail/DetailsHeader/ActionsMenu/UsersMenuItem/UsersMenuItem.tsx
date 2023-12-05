@@ -15,8 +15,10 @@ import {UserMenuItem} from "./UserMenuItem";
 import {useAppDispatch, useAppSelector, useGetUsers, usePatchShoppingList} from "../../../../../hooks";
 import {addAuthorizedUser, setShoppingList} from "../../../../../store/shoppingListSlice";
 import {User} from "@auth0/auth0-react";
+import {useTranslation} from "react-i18next";
 
 export const UsersMenuItem = () => {
+    const {t}=useTranslation()
     const [selectedUser, setSelecteduser] = useState<{label: string, value: string} | null>(null)
     const [opened, setOpened] = useState(false)
     const {data: patchData, update, loading: patchLoading} = usePatchShoppingList()
@@ -57,7 +59,7 @@ export const UsersMenuItem = () => {
         <>
             <MenuItem onClick={() => {
                 setOpened(true)
-            }}>Spravovat členy</MenuItem>
+            }}>{t("shopping_list_detail.actions.users")}</MenuItem>
             <Dialog
                 open={opened}
                 onClose={() => {
@@ -65,7 +67,7 @@ export const UsersMenuItem = () => {
                 }}
             >
                 <DialogTitle>
-                    Členové
+                    {t("shopping_list_detail.actions.users_modal.title")}
                 </DialogTitle>
                 <DialogContent>
                     <Stack spacing={1}>
@@ -97,7 +99,7 @@ export const UsersMenuItem = () => {
                         <Button onClick={() => {
                             handleAddMember()
                         }} disableElevation variant={"contained"}>
-                            {patchLoading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Přidat"}
+                            {patchLoading ? <CircularProgress size={20} sx={{color: "white"}}/> : t("shopping_list_detail.actions.users_modal.add")}
                         </Button>
                     </Stack>
                 </DialogContent>

@@ -1,7 +1,6 @@
 import express, {Request, Response, NextFunction} from 'express';
 import {shoppingListRouter} from "./routes/shoppingList";
 import {shoppingListItemRouter} from "./routes/shoppingListItem";
-import {userRouter} from "./routes/user";
 import cors from "cors"
 import {errorHandler} from "./middlewares";
 import {PrismaClient} from "@prisma/client";
@@ -16,7 +15,6 @@ app.use(cors({credentials: true, origin: true}))
 app.use(express.json({limit: "50mb"}));
 
 app.use("/shoppingList", shoppingListRouter)
-app.use("/user", userRouter)
 app.use("/shoppingListItem", shoppingListItemRouter)
 
 app.get('/', (req,res)=>{

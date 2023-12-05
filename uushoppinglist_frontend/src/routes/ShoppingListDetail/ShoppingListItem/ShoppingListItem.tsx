@@ -38,7 +38,7 @@ export const ShoppingListItem = ({id, solved, name}: ShoppingListItemProps) => {
                     <Checkbox checked={solved} onChange={(e) => {
                         handleShoppingListItemStateChange(id, e.target.checked)
                     }} color={"primary"}/>
-                    <Typography>{name}</Typography>
+                    <Typography color={"text.primary"}>{name}</Typography>
                 </Stack>
                 <IconButton onClick={()=>{handleShoppingListItemDelete(id)}} sx={{ml: "auto"}} size={"small"} color={"primary"}><DeleteOutline/></IconButton>
             </Stack>

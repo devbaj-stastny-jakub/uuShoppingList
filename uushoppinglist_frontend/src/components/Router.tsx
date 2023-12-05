@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useMemo, useState} from 'react';
 import {
     BrowserRouter,
     createBrowserRouter,
@@ -14,73 +14,115 @@ import {
     Box,
     Button, CircularProgress,
     Container, Snackbar,
-    Stack,
+    Stack, ThemeProvider, ToggleButton, ToggleButtonGroup,
     useTheme
 } from "@mui/material";
 import {useAuth0} from "@auth0/auth0-react";
 import {ShoppingListsList} from "../routes/ShoppingListsList";
 import {NavLink} from "./NavLink";
-import {useAppSelector} from "../hooks";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {themeOptionsDark, themeOptionsLight} from "../config";
+import {createTheme} from "@mui/material/styles";
+import {setColorMode, setLanguage, toggleColorMode} from "../store/settingsSlice";
+import {ColorSchemeSwitch} from "./ColorSchemeSwitch";
+import useLocalStorage from "use-local-storage";
+import {useTranslation} from "react-i18next";
+import {LanguageSwitch} from "./LanguageSwitch";
 
 export const Router = () => {
     const [open, setOpen] = useState(false)
+    const {colorMode, language} = useAppSelector(state => state.settings)
     const {loginWithRedirect, isAuthenticated, logout, isLoading} = useAuth0()
     const {message} = useAppSelector(state => state.error)
-    const theme = useTheme()
     useEffect(() => {
-        if(!message) return
+        if (!message) return
         setOpen(true)
     }, [message]);
-    return (
-        <BrowserRouter>
-            {isLoading ? (
-                <Stack width={"100%"} height={"100vh"} justifyContent={"center"} alignItems={"center"}>
-                    <CircularProgress size={150} color="primary"/>
-                </Stack>
-            ) : (
-                <>
-                    <Stack sx={{backgroundColor: "text.primary"}}>
-                        <Snackbar open={open} autoHideDuration={6000} onClose={()=>{setOpen(false)}}>
-                            <Alert onClose={()=>{setOpen(false)}} severity="error" sx={{ width: '100%' }}>
-                                {message}
-                            </Alert>
-                        </Snackbar>
-                        <Container>
-                            <Stack direction={"row"} justifyContent={"space-between"}>
-                                <Stack direction={"row"}>
-                                    <Stack direction={"row"} alignItems={"center"} px={2}>
-                                        <NavLink text={"Domovská stránka"} to={"/"}/>
-                                        {isAuthenticated && (<NavLink text={"Seznamy"} to={"/shoppingLists"}/>)}
-                                    </Stack>
-                                </Stack>
-                                {!isAuthenticated &&
-                                    <Button sx={{my: 1}} variant={"contained"} onClick={() => {
-                                        loginWithRedirect()
-                                    }}>
-                                        Přihlásit se
-                                    </Button>}
-                                {isAuthenticated &&
-                                    <Button sx={{my: 1}} onClick={() => {
-                                        logout({logoutParams: {returnTo: window.location.origin}})
-                                    }} color={"info"} variant={"text"}>
-                                        Odhlásit se
-                                    </Button>}
-                            </Stack>
-                        </Container>
-                    </Stack>
-                    <Routes>
-                        <Route path={"/"} element={
-                            <Stack>
+    const theme = useMemo(() => {
+        return createTheme(colorMode === "light" ? themeOptionsLight : themeOptionsDark)
+    }, [colorMode])
 
+    const {t, i18n} = useTranslation()
+
+    const dispatch = useAppDispatch()
+    const [localColorMode, setLocalColorMode] = useLocalStorage<"light" | "dark">("colorMode", "light")
+    useEffect(() => {
+        setLocalColorMode(colorMode)
+    }, [colorMode]);
+    useLayoutEffect(() => {
+        dispatch(setColorMode(localColorMode))
+    }, [localColorMode]);
+    const [languageSetting, setLanguageSetting] = useLocalStorage<string>("lang", "cz")
+    useEffect(() => {
+        setLanguageSetting(language)
+        i18n.changeLanguage(language)
+    }, [language]);
+    useLayoutEffect(() => {
+        dispatch(setLanguage(languageSetting))
+    }, [languageSetting]);
+    return (
+        <ThemeProvider theme={theme}>
+            <Stack width={"100%"} height={"100vh"} sx={{backgroundColor: "background.default"}}>
+                <BrowserRouter>
+                    {isLoading ? (
+                        <Stack width={"100%"} height={"100vh"} justifyContent={"center"} alignItems={"center"}>
+                            <CircularProgress size={150} color="primary"/>
+                        </Stack>
+                    ) : (
+                        <>
+                            <Stack sx={{backgroundColor: "primary.dark"}}>
+                                <Snackbar open={open} autoHideDuration={6000} onClose={() => {
+                                    setOpen(false)
+                                }}>
+                                    <Alert onClose={() => {
+                                        setOpen(false)
+                                    }} severity="error" sx={{width: '100%'}}>
+                                        {message}
+                                    </Alert>
+                                </Snackbar>
+                                <Container>
+                                    <Stack direction={"row"} justifyContent={"space-between"}>
+                                        <Stack direction={"row"}>
+                                            <Stack direction={"row"} alignItems={"center"} px={2}>
+                                                <NavLink text={t("navmenu.home")} to={"/"}/>
+                                                {isAuthenticated && (
+                                                    <NavLink text={t("navmenu.lists")} to={"/shoppingLists"}/>)}
+                                            </Stack>
+                                        </Stack>
+                                        <Stack direction={"row"} spacing={2} py={1}>
+                                            <ColorSchemeSwitch/>
+                                            <LanguageSwitch />
+                                            {!isAuthenticated &&
+                                                <Button variant={"contained"} onClick={() => {
+                                                    loginWithRedirect()
+                                                }}>
+                                                    {t("navmenu.login")}
+                                                </Button>}
+                                            {isAuthenticated &&
+                                                <Button onClick={() => {
+                                                    logout({logoutParams: {returnTo: window.location.origin}})
+                                                }} color={"info"} variant={"text"}>
+                                                    {t("navmenu.logout")}
+                                                </Button>}
+                                        </Stack>
+                                    </Stack>
+                                </Container>
                             </Stack>
-                        }/>
-                        <Route path={"/shoppingLists"}
-                               element={isAuthenticated ? <ShoppingListsList/> : <Navigate to={"/"}/>}/>
-                        <Route path={"/shoppingList/:id"}
-                               element={isAuthenticated ? <ShoppingListDetail/> : <Navigate to={"/"}/>}/>
-                    </Routes>
-                </>
-            )}
-        </BrowserRouter>
+                            <Routes>
+                                <Route path={"/"} element={
+                                    <Stack>
+                                        {t("welcome")}
+                                    </Stack>
+                                }/>
+                                <Route path={"/shoppingLists"}
+                                       element={isAuthenticated ? <ShoppingListsList/> : <Navigate to={"/"}/>}/>
+                                <Route path={"/shoppingList/:id"}
+                                       element={isAuthenticated ? <ShoppingListDetail/> : <Navigate to={"/"}/>}/>
+                            </Routes>
+                        </>
+                    )}
+                </BrowserRouter>
+            </Stack>
+        </ThemeProvider>
     );
 }

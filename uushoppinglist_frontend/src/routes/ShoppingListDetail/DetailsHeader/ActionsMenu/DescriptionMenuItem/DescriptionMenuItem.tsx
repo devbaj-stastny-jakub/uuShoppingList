@@ -10,8 +10,10 @@ import {
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector, usePatchShoppingList} from "../../../../../hooks";
 import {editShoppingListValues, setShoppingList} from "../../../../../store/shoppingListSlice";
+import {useTranslation} from "react-i18next";
 
 export const DescriptionMenuItem = ()=>{
+    const {t}= useTranslation()
     const [opened, setOpened] = useState(false)
     const [name, setName] = useState("")
     const {shoppingList} = useAppSelector(state => state.shoppingList)
@@ -35,13 +37,13 @@ export const DescriptionMenuItem = ()=>{
 
     return(
         <>
-            <MenuItem onClick={()=>{setOpened(true)}}>Upravit popis</MenuItem>
+            <MenuItem onClick={()=>{setOpened(true)}}>{t("shopping_list_detail.actions.description")}</MenuItem>
             <Dialog
                 open={opened}
                 onClose={()=>{setOpened(false)}}
             >
                 <DialogTitle>
-                    Upravit popis nákupního seznamu
+                    {t("shopping_list_detail.actions.description_modal.title")}
                 </DialogTitle>
                 <DialogContent>
                     <TextField multiline maxRows={5} value={name} onChange={(e)=>{setName(e.target.value)}} fullWidth />
@@ -49,9 +51,9 @@ export const DescriptionMenuItem = ()=>{
                 <DialogActions>
                     <Button onClick={() => {
                         setOpened(false)
-                    }} color={"info"}>Zrušit</Button>
+                    }} color={"info"}>{t("shopping_list_detail.actions.description_modal.cancel")}</Button>
                     <Button color={"success"} onClick={()=>{handleRename()}} variant={"contained"}>
-                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Upravit"}
+                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : t("shopping_list_detail.actions.description_modal.edit")}
                     </Button>
                 </DialogActions>
             </Dialog>

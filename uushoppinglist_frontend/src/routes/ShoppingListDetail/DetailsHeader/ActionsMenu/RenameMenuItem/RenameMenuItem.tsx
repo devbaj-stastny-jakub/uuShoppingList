@@ -10,8 +10,10 @@ import {
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector, usePatchShoppingList} from "../../../../../hooks";
 import {editShoppingListValues, setShoppingList} from "../../../../../store/shoppingListSlice";
+import {useTranslation} from "react-i18next";
 
 export const RenameMenuItem = ()=>{
+    const {t}=useTranslation()
     const [opened, setOpened] = useState(false)
     const [name, setName] = useState("")
     const {shoppingList} = useAppSelector(state => state.shoppingList)
@@ -35,13 +37,13 @@ export const RenameMenuItem = ()=>{
 
     return(
         <>
-            <MenuItem onClick={()=>{setOpened(true)}}>Přejmenovat</MenuItem>
+            <MenuItem onClick={()=>{setOpened(true)}}>{t("shopping_list_detail.actions.rename")}</MenuItem>
             <Dialog
                 open={opened}
                 onClose={()=>{setOpened(false)}}
             >
                 <DialogTitle>
-                    Přejmenovat nákupní seznam
+                    {t("shopping_list_detail.actions.rename_modal.title")}
                 </DialogTitle>
                 <DialogContent>
                     <TextField value={name} onChange={(e)=>{setName(e.target.value)}} fullWidth />
@@ -49,9 +51,9 @@ export const RenameMenuItem = ()=>{
                 <DialogActions>
                     <Button onClick={() => {
                         setOpened(false)
-                    }} color={"info"}>Zrušit</Button>
+                    }} color={"info"}>{t("shopping_list_detail.actions.rename_modal.cancel")}</Button>
                     <Button color={"success"} onClick={()=>{handleRename()}} variant={"contained"}>
-                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : "Přejmenovat"}
+                        {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : t("shopping_list_detail.actions.rename_modal.rename")}
                     </Button>
                 </DialogActions>
             </Dialog>

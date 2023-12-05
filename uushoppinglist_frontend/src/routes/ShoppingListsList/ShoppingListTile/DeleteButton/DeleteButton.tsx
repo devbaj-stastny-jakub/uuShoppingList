@@ -3,12 +3,14 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} fr
 import {MouseEventHandler, useState} from "react";
 import {useAppDispatch, useDeleteShoppingList} from "../../../../hooks";
 import {deleteShoppingList} from "../../../../store/shoppingListsListSlice";
+import {useTranslation} from "react-i18next";
 
 export interface DeleteButtonProps {
     id: string
 }
 
 export const DeleteButton = ({id}: DeleteButtonProps) => {
+    const {t} = useTranslation()
     const dispatch = useAppDispatch()
     const {deleteList, loading} = useDeleteShoppingList(id)
     const [opened, setOpened] = useState(false)
@@ -35,14 +37,14 @@ export const DeleteButton = ({id}: DeleteButtonProps) => {
                 }}
             >
                 <DialogTitle>
-                    Opravdu si přejete smazat nákupní seznam?
+                    {t("shopping_lists.modal.delele_message")}
                 </DialogTitle>
                 <DialogActions>
                     <Button onClick={(e) => {
                         e.stopPropagation()
                         setOpened(false)
-                    }} color={"info"}>Zrušit</Button>
-                    <Button color={"error"} onClick={handleDelete} variant={"contained"}>Smazat</Button>
+                    }} color={"info"}>{t("shopping_lists.cancel")}</Button>
+                    <Button color={"error"} onClick={handleDelete} variant={"contained"}>{t("shopping_lists.modal.delete")}</Button>
                 </DialogActions>
             </Dialog>
         </>
