@@ -11,7 +11,7 @@ export const NavLink = ({text, to}: NavLinkProps) => {
     const [active, setActive] = useState(false)
     const theme = useTheme()
     return (
-        <Stack justifyContent={"center"} height={"100%"} px={2}
+        <Stack width={{lg: "auto", xs:"100%"}} justifyContent={"center"} height={"100%"} px={2} py={{lg: 0, xs: 2}}
                sx={{backgroundColor: active ? "primary.main" : "transparent", transition: "all 0.2s ease"}}>
             <RouterNavLink
                 style={({isActive}) => {

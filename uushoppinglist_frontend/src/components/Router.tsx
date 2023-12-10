@@ -13,7 +13,7 @@ import {
     Alert,
     Box,
     Button, CircularProgress,
-    Container, Snackbar,
+    Container, Drawer, Snackbar,
     Stack, ThemeProvider, ToggleButton, ToggleButtonGroup,
     useTheme
 } from "@mui/material";
@@ -28,16 +28,11 @@ import {ColorSchemeSwitch} from "./ColorSchemeSwitch";
 import useLocalStorage from "use-local-storage";
 import {useTranslation} from "react-i18next";
 import {LanguageSwitch} from "./LanguageSwitch";
+import {NavigationMenu} from "./NavigationMenu";
 
 export const Router = () => {
-    const [open, setOpen] = useState(false)
     const {colorMode, language} = useAppSelector(state => state.settings)
-    const {loginWithRedirect, isAuthenticated, logout, isLoading} = useAuth0()
-    const {message} = useAppSelector(state => state.error)
-    useEffect(() => {
-        if (!message) return
-        setOpen(true)
-    }, [message]);
+    const {isAuthenticated, isLoading} = useAuth0()
     const theme = useMemo(() => {
         return createTheme(colorMode === "light" ? themeOptionsLight : themeOptionsDark)
     }, [colorMode])
@@ -62,7 +57,7 @@ export const Router = () => {
     }, [languageSetting]);
     return (
         <ThemeProvider theme={theme}>
-            <Stack width={"100%"} height={"100vh"} sx={{backgroundColor: "background.default"}}>
+            <Stack width={"100%"} minHeight={"100vh"} sx={{backgroundColor: "background.default"}}>
                 <BrowserRouter>
                     {isLoading ? (
                         <Stack width={"100%"} height={"100vh"} justifyContent={"center"} alignItems={"center"}>
@@ -70,44 +65,7 @@ export const Router = () => {
                         </Stack>
                     ) : (
                         <>
-                            <Stack sx={{backgroundColor: "primary.dark"}}>
-                                <Snackbar open={open} autoHideDuration={6000} onClose={() => {
-                                    setOpen(false)
-                                }}>
-                                    <Alert onClose={() => {
-                                        setOpen(false)
-                                    }} severity="error" sx={{width: '100%'}}>
-                                        {message}
-                                    </Alert>
-                                </Snackbar>
-                                <Container>
-                                    <Stack direction={"row"} justifyContent={"space-between"}>
-                                        <Stack direction={"row"}>
-                                            <Stack direction={"row"} alignItems={"center"} px={2}>
-                                                <NavLink text={t("navmenu.home")} to={"/"}/>
-                                                {isAuthenticated && (
-                                                    <NavLink text={t("navmenu.lists")} to={"/shoppingLists"}/>)}
-                                            </Stack>
-                                        </Stack>
-                                        <Stack direction={"row"} spacing={2} py={1}>
-                                            <ColorSchemeSwitch/>
-                                            <LanguageSwitch />
-                                            {!isAuthenticated &&
-                                                <Button variant={"contained"} onClick={() => {
-                                                    loginWithRedirect()
-                                                }}>
-                                                    {t("navmenu.login")}
-                                                </Button>}
-                                            {isAuthenticated &&
-                                                <Button onClick={() => {
-                                                    logout({logoutParams: {returnTo: window.location.origin}})
-                                                }} color={"info"} variant={"text"}>
-                                                    {t("navmenu.logout")}
-                                                </Button>}
-                                        </Stack>
-                                    </Stack>
-                                </Container>
-                            </Stack>
+                            <NavigationMenu />
                             <Routes>
                                 <Route path={"/"} element={
                                     <Stack>
