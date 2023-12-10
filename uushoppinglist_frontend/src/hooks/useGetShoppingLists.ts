@@ -15,6 +15,7 @@ export const useGetShoppingLists = () => {
         try {
             const token = await getAccessTokenSilently()
             if(!token) return
+            console.debug(token)
             const response = await axios({
                 method: "GET",
                 url: backend.base_url + "/shoppingList/list",

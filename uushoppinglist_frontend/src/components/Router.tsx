@@ -32,7 +32,7 @@ import {NavigationMenu} from "./NavigationMenu";
 
 export const Router = () => {
     const {colorMode, language} = useAppSelector(state => state.settings)
-    const {isAuthenticated, isLoading} = useAuth0()
+    const {isAuthenticated, isLoading, getAccessTokenSilently} = useAuth0()
     const theme = useMemo(() => {
         return createTheme(colorMode === "light" ? themeOptionsLight : themeOptionsDark)
     }, [colorMode])
