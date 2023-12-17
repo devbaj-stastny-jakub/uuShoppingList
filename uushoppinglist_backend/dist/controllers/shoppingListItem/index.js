@@ -39,7 +39,7 @@ const helpers_1 = require("../../helpers");
 const errors_1 = require("../../errors");
 const index_1 = require("../../index");
 const createItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
         const data = req.body;
         shoppingListItem_1.shoppingListItemModel.createModel.validate(data);
@@ -59,7 +59,8 @@ const createItem = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         }).catch(() => {
             throw (0, errors_1.ThrowableError)("Database error, check logs", 500, "shoppingListItem.unknown");
         });
-        return updatedShoppingList;
+        const profile = (0, helpers_1.getProfile)(((_b = req.auth) === null || _b === void 0 ? void 0 : _b.payload.sub) || "", updatedShoppingList);
+        return Object.assign(Object.assign({}, updatedShoppingList), { profile: profile });
     }
     catch (e) {
         next(e);
@@ -67,11 +68,11 @@ const createItem = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.createItem = createItem;
 const patchItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _c, _d;
     try {
         const data = req.body;
         shoppingListItem_1.shoppingListItemModel.updateModel.validate(data);
-        yield (0, helpers_1.getIsAuthorized)((_b = req.auth) === null || _b === void 0 ? void 0 : _b.payload.sub, data.shoppingListId, ["owner"]);
+        yield (0, helpers_1.getIsAuthorized)((_c = req.auth) === null || _c === void 0 ? void 0 : _c.payload.sub, data.shoppingListId, ["owner"]);
         const shoppingListToUpdate = yield index_1.prisma.shoppingList.findFirst({
             where: {
                 id: data.shoppingListId
@@ -99,7 +100,8 @@ const patchItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         }).catch((e) => {
             throw (0, errors_1.ThrowableError)("Database error, check logs", 500, "shoppingListItem.unknown");
         });
-        return updatedShoppingList;
+        const profile = (0, helpers_1.getProfile)(((_d = req.auth) === null || _d === void 0 ? void 0 : _d.payload.sub) || "", updatedShoppingList);
+        return Object.assign(Object.assign({}, updatedShoppingList), { profile: profile });
     }
     catch (e) {
         next(e);
@@ -107,11 +109,11 @@ const patchItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function
 });
 exports.patchItem = patchItem;
 const deleteItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _e, _f;
     try {
         const data = req.body;
         shoppingListItem_1.shoppingListItemModel.deleteModel.validate(data);
-        yield (0, helpers_1.getIsAuthorized)((_c = req.auth) === null || _c === void 0 ? void 0 : _c.payload.sub, data.shoppingListId, ["owner", "member"]);
+        yield (0, helpers_1.getIsAuthorized)((_e = req.auth) === null || _e === void 0 ? void 0 : _e.payload.sub, data.shoppingListId, ["owner", "member"]);
         const shoppingListToUpdate = yield index_1.prisma.shoppingList.findFirst({
             where: {
                 id: data.shoppingListId
@@ -136,7 +138,8 @@ const deleteItem = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             console.log(e);
             throw (0, errors_1.ThrowableError)("Database error, check logs", 500, "shoppingListItem.unknown");
         });
-        return updatedShoppingList;
+        const profile = (0, helpers_1.getProfile)(((_f = req.auth) === null || _f === void 0 ? void 0 : _f.payload.sub) || "", updatedShoppingList);
+        return Object.assign(Object.assign({}, updatedShoppingList), { profile: profile });
     }
     catch (e) {
         next(e);

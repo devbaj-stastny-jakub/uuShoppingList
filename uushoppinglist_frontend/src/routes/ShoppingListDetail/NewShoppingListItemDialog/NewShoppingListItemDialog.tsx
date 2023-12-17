@@ -10,7 +10,7 @@ export interface NewShoppingListItemDialogProps {
 }
 
 export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListItemDialogProps) => {
-    const {t}=useTranslation()
+    const {t} = useTranslation()
     const [name, setName] = useState("")
     const dispatch = useAppDispatch()
     const {shoppingList} = useAppSelector(state => state.shoppingList)
@@ -18,6 +18,7 @@ export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListIt
     const handleCreateShoppingListItem = () => {
         create().then(() => {
             handleClose(false)
+            setName("")
         })
     }
     useEffect(() => {
@@ -39,12 +40,9 @@ export const NewShoppingListItemDialog = ({open, handleClose}: NewShoppingListIt
                 <Button onClick={() => {
                     handleClose(false)
                 }} color={"info"}>{t("shopping_list_detail.modal.cancel")}</Button>
-                <Button onClick={() => {
-                    handleClose(false)
-                    handleCreateShoppingListItem()
-                    setName("")
-                }} variant={"contained"} color={"success"}>
-                    {loading ? <CircularProgress size={20} sx={{color: "white"}}/> : t("shopping_list_detail.modal.create")}
+                <Button onClick={handleCreateShoppingListItem} variant={"contained"} color={"success"}>
+                    {loading ?
+                        <CircularProgress size={20} sx={{color: "white"}}/> : t("shopping_list_detail.modal.create")}
                 </Button>
             </DialogActions>
         </Dialog>

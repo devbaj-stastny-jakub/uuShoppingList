@@ -1,9 +1,14 @@
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import {initReactI18next} from "react-i18next";
 
 const resources = {
     en: {
         translation: {
+            solved_items: "Solved items",
+            unsolved_items: "Unsolved items",
+            items_count_zero: "({{count}} item)",
+            items_count_one: "({{count}} item)",
+            items_count_other: "({{count}} items)",
             navmenu: {
                 home: "Home",
                 lists: "Shopping Lists",
@@ -57,8 +62,13 @@ const resources = {
             }
         }
     },
-    cz: {
+    cs: {
         translation: {
+            solved_items: "Vyřešené položky",
+            unsolved_items: "Nevyřešené položky",
+            items_count_one: "({{count}} položka)",
+            items_count_few: "({{count}} položky)",
+            items_count_other: "({{count}} položek)",
             navmenu: {
                 home: "Domů",
                 lists: "Nákupní seznamy",

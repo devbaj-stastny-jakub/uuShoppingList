@@ -62,7 +62,7 @@ export const ShoppingListsList = () => {
             </Stack>
             <Grid container mt={2} spacing={2}>
                 {!loading && filteredShoppingLists.map(shoppingList => (
-                    <ShoppingListTile key={shoppingList.id} id={shoppingList.id} name={shoppingList.name}
+                    <ShoppingListTile key={shoppingList.id} itemsCount={shoppingList.items.length} id={shoppingList.id} name={shoppingList.name}
                                       ownerId={shoppingList.ownerId} membersIds={shoppingList.membersIds}
                                       image={shoppingList.image}/>
                 ))}

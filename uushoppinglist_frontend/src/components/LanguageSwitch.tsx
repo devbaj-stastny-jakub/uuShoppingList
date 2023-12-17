@@ -19,7 +19,7 @@ export const LanguageSwitch = ({fullwidth = false}:LanguageSwitchProps)=>{
             value={language}
             onChange={(e, val)=>{dispatch(setLanguage(val))}}
         >
-            <ToggleButton value={"cz"}><Emoji>:flag_czechia:</Emoji></ToggleButton>
+            <ToggleButton value={"cs"}><Emoji>:flag_czechia:</Emoji></ToggleButton>
             <ToggleButton value={"en"}><Emoji>:flag_united_kingdom:</Emoji></ToggleButton>
         </ToggleButtonGroup>
     )
